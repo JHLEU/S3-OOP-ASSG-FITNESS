@@ -13,6 +13,8 @@ import java.io.File;
 import java.util.ArrayList;
 public class Main {
      public static void main(String[] args){
+         
+        Booking.page("user");
         ArrayList<MembershipData> list = new ArrayList();
         
         System.out.println("Fitness Club System Testing ===\n");
