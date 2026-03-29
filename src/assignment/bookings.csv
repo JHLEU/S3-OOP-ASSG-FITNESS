@@ -1,6 +1,6 @@
 booking_id,username,date,time,activity,staff,status
-B0001,user,2026-03-30,10,Yoga,null,BOOKED
-B0002,user,2026-03-30,10,Yoga,null,BOOKED
+B0001,user,2026-03-30,10,Yoga,staff,COMPLETED
+B0002,user,2026-03-30,10,Yoga,staff,COMPLETED
 B0003,user,2026-03-30,10,Yoga,null,BOOKED
 B0004,user,2026-03-30,10,Yoga,null,BOOKED
 B0005,user,2026-03-30,10,Yoga,null,BOOKED
@@ -86,6 +86,9 @@ B0084,user,2026-03-30,10,Back,null,BOOKED
 B0085,user,2026-03-30,10,Back,null,BOOKED
 B0086,user,2026-03-30,10,Back,null,BOOKED
 B0087,user,2026-03-30,10,Back,null,BOOKED
-B0088,user,2026-03-30,10,Back,staff,BOOKED
+B0088,user,2026-03-30,10,Back,staff,COMPLETED
 B0089,user,2026-03-30,10,Back,staff,COMPLETED
 B0090,user,2026-03-30,10,Back,staff,COMPLETED
+B0001,username,2026-03-30,13,Yoga,staff,COMPLETED
+B0002,username,2026-03-30,13,Yoga,staff,COMPLETED
+B0003,user,2026-03-30,13,HIIT,null,BOOKED
