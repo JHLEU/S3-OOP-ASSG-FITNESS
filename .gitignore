@@ -1,0 +1,22 @@
+# NetBeans specific files and folders
+nbproject/private/
+nbproject/project.xml.bak
+nbbuild/
+dist/
+build/
+nbdist/
+
+# Java Compiled Files
+*.class
+
+# Packaged Archives
+*.jar
+*.war
+*.ear
+*.zip
+
+# OS generated files
+.DS_Store
+.DS_Store?
+Thumbs.db
+ehthumbs.db
