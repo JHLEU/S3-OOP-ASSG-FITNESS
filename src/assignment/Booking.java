@@ -10,6 +10,7 @@ import java.io.FileWriter;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 /**
  *
@@ -17,6 +18,8 @@ import java.util.ArrayList;
  */
 
 public class Booking {
+    static Scanner sc = new Scanner(System.in);
+    
     public static void page(String username) {
         /// booking main page
         // -------------------- ask for date --------------------
@@ -485,7 +488,7 @@ public class Booking {
     public static String generateBookingId() {
         String lastLine = "";
         try {
-            BufferedReader br = new BufferedReader(new FileReader("bookings.csv"));
+            BufferedReader br = new BufferedReader(new FileReader("src/assignment/bookings.csv"));
             String line;
 
             br.readLine(); // skip header
