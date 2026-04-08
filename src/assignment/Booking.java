@@ -20,7 +20,7 @@ public class Booking {
     static Scanner sc = new Scanner(System.in);
     
     public static void page(String username) {
-        /// booking main page
+        /// user booking page
         // -------------------- ask for date --------------------
         String targetDate;
         while (true) {
@@ -41,24 +41,25 @@ public class Booking {
         }
 
         // -------------------- ask for time --------------------
-        bookingTime(); // 显示时间菜单 (1-4)
+        bookingTime(); // display time table 
         
         int timeChoice = -1;
         while (true) {
             if (sc.hasNextInt()) {
                 timeChoice = sc.nextInt();
-                sc.nextLine(); // 清除回车符缓冲区
+                sc.nextLine(); // clear buffer
                 
-                // 检查数字是否在 1 到 4 之间
+                // check input is between 1~4 or not
                 if (timeChoice >= 1 && timeChoice <= 4) {
-                    break; // 输入正确，跳出循环
+                    break; // input correct, break out loop
                 } else {
                     System.out.println("Invalid choice! Please enter a number between 1 and 4:");
                 }
+                
             } else {
-                // 如果输入的不是数字（如字母、符号）
+                // input is not the number
                 System.out.println("Invalid input! Please enter a number (E.g 1):");
-                sc.nextLine(); // 清除错误的字符串输入
+                sc.nextLine(); // clear error input
             }
         }
 
@@ -93,7 +94,7 @@ public class Booking {
                 }
             } else {
                 System.out.println("Invalid input! Please enter a valid number (E.g 1):");
-                sc.nextLine(); // 清除错误的字符串输入
+                sc.nextLine(); // clear error input
             }
         }
 
@@ -102,7 +103,7 @@ public class Booking {
     }
     
     public static void deletePage(String username) {
-
+        /// user delete bookinh page
         String targetDate;
 
         // -------------------- ask for date --------------------
@@ -118,7 +119,8 @@ public class Booking {
             String day = sc.nextLine();
 
             targetDate = getValidatedDate(year, month, day);
-
+            
+            // valid check
             if (!targetDate.equals("INVALID")) break;
 
             System.out.println("Invalid date, try again.");
@@ -141,27 +143,28 @@ public class Booking {
         // -------------------- choose booking id --------------------
         System.out.print("\nEnter booking_id to delete (or '0' to exit): ");
         String input = sc.nextLine().trim().toUpperCase();
-
+        
+        // enter 0 for exit
         if (input.equals("0")) return;
 
         // -------------------- validate id --------------------
-        boolean found = false;
-
+        boolean found = false; // for display layout
+        
         for (String b : bookings) {
             if (b.startsWith(input + ",")) {
                 found = true;
                 break;
             }
         }
-
+        
         if (!found) {
             System.out.println("❌ Invalid booking_id!");
-            return;
+            return; // return to user menu
         }
 
         // -------------------- delete process --------------------
-        ArrayList<String> updated = new ArrayList<>();
-
+        ArrayList<String> updated = new ArrayList<>(); // create new array to store change
+        
         try {
             BufferedReader br = new BufferedReader(new FileReader("src/assignment/bookings.csv"));
             String line;
@@ -169,12 +172,12 @@ public class Booking {
             while ((line = br.readLine()) != null) {
                 String[] data = line.split(",");
 
-                // ❌ skip the one we want to delete
+                // skip target line
                 if (data[0].equals(input)) {
                     continue;
                 }
-
-                updated.add(line);
+                
+                updated.add(line); //store all data to "update" array without the target line
             }
 
             br.close();
@@ -186,7 +189,7 @@ public class Booking {
             }
             fw.close();
 
-            System.out.println("✅ Booking deleted successfully!");
+            System.out.println(" Booking deleted successfully! ");
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -195,7 +198,7 @@ public class Booking {
 
     
     public static void select(String staffname) {
-        // Let staff select the bookings that are no staff select
+        /// Let staff select the bookings that are no staff select
         String targetDate;
         
         // only need input one time year month day
@@ -212,26 +215,26 @@ public class Booking {
 
             targetDate = getValidatedDate(year, month, day);
             
-            
+            // valid check
             if (!targetDate.equals("INVALID")) break;
 
             System.out.println("Invalid date, try again.");
         }
         
-        boolean shouldRefreshList = true;
+        boolean shouldRefreshList = true; // for display layout
         
-        // 2. 循环让员工连续选择 booking_id
+        // loop for staff can continue choose booking_id
         while (true) {
-            // 每次循环重新获取最新的未分配 bookings，这样认领过的就会消失
+            // refresh booking table
             ArrayList<String> bookings = filterBookingWithOutStaff(targetDate);
             
-            // empty condition
+            // check is empty or not
             if (bookings.isEmpty()) {
                 System.out.println("\nNo available booking for this date.");
                 break;
             }
             
-            // 只有在需要时才打印这 90 多行列表
+            // only in needed that will display the booking list
             if (shouldRefreshList) {
                 System.out.println("\n---------- bookings ----------");
                 for (String line : bookings) {
@@ -242,6 +245,7 @@ public class Booking {
             // Get booking_id or Exit
             System.out.print("\nEnter booking_id to select (or enter '0' to exit): ");
             String input = sc.nextLine().trim(); 
+            // enter 0 to break out to staff menu
             if (input.equals("0")) {
                 System.out.println("Exiting to Staff Menu...");
                 return;
@@ -259,24 +263,25 @@ public class Booking {
             }
             
             if (isValidId) {
+                // correctly find the booking id and display booking list again
                 updateStaff(targetId, staffname);
-                shouldRefreshList = true; // 成功认领后，下次循环刷新列表
+                shouldRefreshList = true;
             } else {
-                // --- 关键点：输入错误时不重新打印列表，只打印错误信息 ---
+                // input error display error message and don't display booking list again 
                 System.out.println("❌ Invalid booking_id! Please enter a valid ID from the list.");
-                shouldRefreshList = false; // 报错后，不刷新列表，直接再次等待输入
+                shouldRefreshList = false;
             }
         }
     }
     
     public static void completeTraining(String staffname) {
         
-        viewStaffBooked(staffname);//display booking that equal staff name and status is BOOKED
+        viewStaffBooked(staffname); //display booking that equal staff name and status is BOOKED
             
         System.out.print("\nEnter booking_id to complete: ");
         String targetId = sc.nextLine().trim().toUpperCase(); // Makesure input format
             
-        updateStatus(targetId);
+        updateStatus(targetId); // update bookings.csv
     }
     
     public static ArrayList<String> filterBookingByUserNamedate(String username, String targetDate) {
@@ -453,7 +458,7 @@ public class Booking {
 
         ArrayList<String> updated = new ArrayList<>();
         
-        //crete "update" to store data
+        //crete "update" array to store data
         try {
             BufferedReader br = new BufferedReader(new FileReader("src/assignment/bookings.csv"));
             String line;
@@ -463,7 +468,7 @@ public class Booking {
 
                 if (data[0].equals(bookingId)) {
                     //B0003,user,2026-03-29,10,Back,null,BOOKED
-                    // 改 staff
+                    // change null to staff
                     data[5] = staffname;
 
                     line = String.join(",", data);
@@ -486,9 +491,9 @@ public class Booking {
         }
     }
     
-    public static boolean updateStatus(String targetId) {
+    public static void updateStatus(String targetId) {
         ArrayList<String> update = new ArrayList<>();
-        boolean found = false; // 增加一个标志位
+        boolean found = false; // valid control
 
         try {
             BufferedReader br = new BufferedReader(new FileReader("src/assignment/bookings.csv"));
@@ -514,15 +519,14 @@ public class Booking {
                     fw.write(l + "\n");
                 }
                 fw.close();
-                System.out.println("✅ Success: Training marked as COMPLETED!");
+                System.out.println(" Success: Training marked as COMPLETED!");
             } else {
-                System.out.println("❌ Error: Booking ID: \"" + targetId + "\" not found!");
+                System.out.println(" Error: Booking ID: \"" + targetId + "\" not found!");
             }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return found; // 返回结果
     }
     
     public static void viewTheDate() {
