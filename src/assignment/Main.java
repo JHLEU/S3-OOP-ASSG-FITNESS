@@ -31,7 +31,11 @@ public class Main {
                     userPage();
                     break;
                 case "2":
-                    staffPage();
+                    if (trainerLogin()) {
+                        staffPage();
+                    } else {
+                        System.out.println("Access denied.");
+                    }
                     break;
                 case "0":
                     System.out.println("Bye!");
@@ -86,5 +90,36 @@ public class Main {
                     System.out.println("Invalid choice!");
             }
         }
+    }
+
+    public static boolean trainerLogin() {
+        int attempts = 3;
+
+        while (attempts > 0) {
+            System.out.println("\n=== Trainer Login ===");
+            System.out.print("Enter Trainer ID (example TR001): ");
+            String trainerId = sc.nextLine();
+
+            if (!Trainer.Trainer.isValidTrainerIdFormat(trainerId)) {
+                System.out.println("Invalid Trainer ID format. Use TR followed by 3 digits.");
+                attempts--;
+                System.out.println("Attempts left: " + attempts);
+                continue;
+            }
+
+            System.out.print("Enter Password: ");
+            String password = sc.nextLine();
+
+            if (Trainer.Trainer.verifyLogin(trainerId, password)) {
+                System.out.println("Login successful.");
+                return true;
+            }
+
+            System.out.println("Invalid Trainer ID or password.");
+            attempts--;
+            System.out.println("Attempts left: " + attempts);
+        }
+
+        return false;
     }
 }
