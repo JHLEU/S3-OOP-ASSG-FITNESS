@@ -18,7 +18,7 @@ public class Filter {
         ArrayList<String> result = new ArrayList<>();
 
         try {
-            BufferedReader br = new BufferedReader(new FileReader("src/assignment/bookings.csv"));
+            BufferedReader br = new BufferedReader(new FileReader("src/Booking/bookings.csv"));
             String line;
             while ((line = br.readLine()) != null) {
                 String[] data = line.split(",");
@@ -124,7 +124,7 @@ public class Filter {
         ArrayList<String> result = new ArrayList<>();
         
         try {
-            BufferedReader br = new BufferedReader(new FileReader("src/assignment/bookings.csv"));
+            BufferedReader br = new BufferedReader(new FileReader("src/Booking/bookings.csv"));
             //
             String line;
 
@@ -159,7 +159,7 @@ public class Filter {
        
         //get booking that equal staff name and status is BOOKED
         try {
-            BufferedReader br = new BufferedReader(new FileReader("src/assignment/bookings.csv"));
+            BufferedReader br = new BufferedReader(new FileReader("src/Booking/bookings.csv"));
             System.out.println("\n---------- bookings ----------" );
             
             String line;

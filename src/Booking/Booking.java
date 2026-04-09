@@ -158,7 +158,7 @@ public class Booking {
         }
         
         if (!found) {
-            System.out.println("❌ Invalid booking_id!");
+            System.out.println(" Invalid booking_id!");
             return; // return to user menu
         }
 
@@ -166,7 +166,7 @@ public class Booking {
         ArrayList<String> updated = new ArrayList<>(); // create new array to store change
         
         try {
-            BufferedReader br = new BufferedReader(new FileReader("src/assignment/bookings.csv"));
+            BufferedReader br = new BufferedReader(new FileReader("src/Booking/bookings.csv"));
             String line;
 
             while ((line = br.readLine()) != null) {
@@ -183,7 +183,7 @@ public class Booking {
             br.close();
 
             // rewrite file
-            FileWriter fw = new FileWriter("src/assignment/bookings.csv");
+            FileWriter fw = new FileWriter("src/Booking/bookings.csv");
             for (String l : updated) {
                 fw.write(l + "\n");
             }
@@ -268,7 +268,7 @@ public class Booking {
                 shouldRefreshList = true;
             } else {
                 // input error display error message and don't display booking list again 
-                System.out.println("❌ Invalid booking_id! Please enter a valid ID from the list.");
+                System.out.println(" Invalid booking_id! Please enter a valid ID from the list.");
                 shouldRefreshList = false;
             }
         }
@@ -293,7 +293,7 @@ public class Booking {
         
         //crete "update" array to store data
         try {
-            BufferedReader br = new BufferedReader(new FileReader("src/assignment/bookings.csv"));
+            BufferedReader br = new BufferedReader(new FileReader("src/Booking/bookings.csv"));
             String line;
 
             while ((line = br.readLine()) != null) {
@@ -313,7 +313,7 @@ public class Booking {
             br.close();
 
             //rewritter booking.csv
-            FileWriter fw = new FileWriter("src/assignment/bookings.csv");
+            FileWriter fw = new FileWriter("src/Booking/bookings.csv");
             for (String l : updated) {
                 fw.write(l + "\n");
             }
@@ -329,7 +329,7 @@ public class Booking {
         boolean found = false; // valid control
 
         try {
-            BufferedReader br = new BufferedReader(new FileReader("src/assignment/bookings.csv"));
+            BufferedReader br = new BufferedReader(new FileReader("src/Booking/bookings.csv"));
             String line;
 
             while ((line = br.readLine()) != null) {
@@ -347,7 +347,7 @@ public class Booking {
 
             // only found is true will rewriter booking.csv
             if (found) {
-                FileWriter fw = new FileWriter("src/assignment/bookings.csv");
+                FileWriter fw = new FileWriter("src/Booking/bookings.csv");
                 for (String l : update) {
                     fw.write(l + "\n");
                 }
@@ -420,7 +420,7 @@ public class Booking {
             
             //------------------- process ------------------------
             try {    
-                FileWriter fw = new FileWriter("src/assignment/bookings.csv", true); 
+                FileWriter fw = new FileWriter("src/Booking/bookings.csv", true); 
                 /*
                 booking_id,
                 username,
@@ -449,7 +449,7 @@ public class Booking {
     public static String generateBookingId() {
         String lastLine = "";
         try {
-            BufferedReader br = new BufferedReader(new FileReader("src/assignment/bookings.csv"));
+            BufferedReader br = new BufferedReader(new FileReader("src/Booking/bookings.csv"));
             String line;
 
             br.readLine(); // skip header
