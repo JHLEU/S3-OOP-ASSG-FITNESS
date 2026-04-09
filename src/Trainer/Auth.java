@@ -16,13 +16,13 @@ import java.util.regex.Pattern;
  *
  * @author JH
  */
-public class Trainer {
+public class Auth {
 
 	private static final Pattern TRID_PATTERN = Pattern.compile("^TR\\d{3}$", Pattern.CASE_INSENSITIVE);
 	private static final Pattern PASSWORD_PATTERN = Pattern.compile("^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[^A-Za-z0-9]).{6,}$");
 	private static final String CREDENTIALS_FILE = "Trainer/TrainerCredentials.csv";
 
-	private Trainer() {
+	private Auth() {
 		// Utility class
 	}
 
