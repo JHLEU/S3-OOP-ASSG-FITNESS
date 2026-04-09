@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package assignment;
+package Booking;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -16,17 +16,17 @@ import java.util.Scanner;
  *
  * @author Yi Hang
  */
-
 public class Booking {
     static Scanner sc = new Scanner(System.in);
     
     public static void page(String username) {
-        /// booking main page
+        /// user booking page
         // -------------------- ask for date --------------------
         String targetDate;
         while (true) {
-            System.out.print("\nYear: ");
+            System.out.print("\nYear(or enter '0' to exit): ");
             String year = sc.nextLine();
+            if (year.equals("0")) return;
             System.out.print("Month: ");
             String month = sc.nextLine();
             System.out.print("Day: ");
@@ -41,29 +41,30 @@ public class Booking {
         }
 
         // -------------------- ask for time --------------------
-        bookingTime(); // 显示时间菜单 (1-4)
+        bookingTime(); // display time table 
         
         int timeChoice = -1;
         while (true) {
             if (sc.hasNextInt()) {
                 timeChoice = sc.nextInt();
-                sc.nextLine(); // 清除回车符缓冲区
+                sc.nextLine(); // clear buffer
                 
-                // 检查数字是否在 1 到 4 之间
+                // check input is between 1~4 or not
                 if (timeChoice >= 1 && timeChoice <= 4) {
-                    break; // 输入正确，跳出循环
+                    break; // input correct, break out loop
                 } else {
                     System.out.println("Invalid choice! Please enter a number between 1 and 4:");
                 }
+                
             } else {
-                // 如果输入的不是数字（如字母、符号）
+                // input is not the number
                 System.out.println("Invalid input! Please enter a number (E.g 1):");
-                sc.nextLine(); // 清除错误的字符串输入
+                sc.nextLine(); // clear error input
             }
         }
 
         // -------------------- ask for select training --------------------
-        ArrayList<String> bookings = viewEmptyTrainingByDate(targetDate, timeSelect(timeChoice));
+        ArrayList<String> bookings = Filter.viewEmptyTrainingByDate(targetDate, timeSelect(timeChoice));
         
         // if the time not have emmpty traning will return to user menu
         if (bookings.isEmpty()) {
@@ -93,7 +94,7 @@ public class Booking {
                 }
             } else {
                 System.out.println("Invalid input! Please enter a valid number (E.g 1):");
-                sc.nextLine(); // 清除错误的字符串输入
+                sc.nextLine(); // clear error input
             }
         }
 
@@ -101,40 +102,139 @@ public class Booking {
         add(username, targetDate, timeSelect(timeChoice), trainingSelect(trainingChoice));
     }
     
-    public static void select(String staffname) {
-        // Let staff select the bookings that are no staff select
+    public static void deletePage(String username) {
+        /// user delete bookinh page
         String targetDate;
-        
-        // 1. 只输入一次日期
+
+        // -------------------- ask for date --------------------
         while (true) {
-            System.out.print("\nYear: ");
+            System.out.print("\nYear(or enter '0' to exit): ");
             String year = sc.nextLine();
+            if (year.equals("0")) return;
+
             System.out.print("Month: ");
             String month = sc.nextLine();
+
             System.out.print("Day: ");
             String day = sc.nextLine();
 
             targetDate = getValidatedDate(year, month, day);
+            
+            // valid check
+            if (!targetDate.equals("INVALID")) break;
 
+            System.out.println("Invalid date, try again.");
+        }
+
+        // -------------------- get user's booking --------------------
+        ArrayList<String> bookings = Filter.UserNamedate(username, targetDate);
+        
+        System.out.println("\n=============== Booking ===============");
+        
+        for (String line : bookings){
+            System.out.println(line);
+        }
+        
+        if (bookings.isEmpty()) {
+            System.out.println("No bookings found.");
+            return;
+        }
+
+        // -------------------- choose booking id --------------------
+        System.out.print("\nEnter booking_id to delete (or '0' to exit): ");
+        String input = sc.nextLine().trim().toUpperCase();
+        
+        // enter 0 for exit
+        if (input.equals("0")) return;
+
+        // -------------------- validate id --------------------
+        boolean found = false; // for display layout
+        
+        for (String b : bookings) {
+            if (b.startsWith(input + ",")) {
+                found = true;
+                break;
+            }
+        }
+        
+        if (!found) {
+            System.out.println("❌ Invalid booking_id!");
+            return; // return to user menu
+        }
+
+        // -------------------- delete process --------------------
+        ArrayList<String> updated = new ArrayList<>(); // create new array to store change
+        
+        try {
+            BufferedReader br = new BufferedReader(new FileReader("src/assignment/bookings.csv"));
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                String[] data = line.split(",");
+
+                // skip target line
+                if (data[0].equals(input)) {
+                    continue;
+                }
+                
+                updated.add(line); //store all data to "update" array without the target line
+            }
+
+            br.close();
+
+            // rewrite file
+            FileWriter fw = new FileWriter("src/assignment/bookings.csv");
+            for (String l : updated) {
+                fw.write(l + "\n");
+            }
+            fw.close();
+
+            System.out.println(" Booking deleted successfully! ");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    
+    public static void select(String staffname) {
+        /// Let staff select the bookings that are no staff select
+        String targetDate;
+        
+        // only need input one time year month day
+        while (true) {
+            System.out.print("\nYear(or enter '0' to exit): ");
+            String year = sc.nextLine();
+            if (year.equals("0")) return;
+            
+            System.out.print("Month: ");
+            String month = sc.nextLine();
+            
+            System.out.print("Day: ");
+            String day = sc.nextLine();
+
+            targetDate = getValidatedDate(year, month, day);
+            
+            // valid check
             if (!targetDate.equals("INVALID")) break;
 
             System.out.println("Invalid date, try again.");
         }
         
-        boolean shouldRefreshList = true;
+        boolean shouldRefreshList = true; // for display layout
         
-        // 2. 循环让员工连续选择 booking_id
+        // loop for staff can continue choose booking_id
         while (true) {
-            // 每次循环重新获取最新的未分配 bookings，这样认领过的就会消失
-            ArrayList<String> bookings = filterBookingWithOutStaff(targetDate);
+            // refresh booking table
+            ArrayList<String> bookings = Filter.WithOutStaff(targetDate);
             
-            // empty condition
+            // check is empty or not
             if (bookings.isEmpty()) {
                 System.out.println("\nNo available booking for this date.");
                 break;
             }
             
-            // 只有在需要时才打印这 90 多行列表
+            // only in needed that will display the booking list
             if (shouldRefreshList) {
                 System.out.println("\n---------- bookings ----------");
                 for (String line : bookings) {
@@ -145,6 +245,7 @@ public class Booking {
             // Get booking_id or Exit
             System.out.print("\nEnter booking_id to select (or enter '0' to exit): ");
             String input = sc.nextLine().trim(); 
+            // enter 0 to break out to staff menu
             if (input.equals("0")) {
                 System.out.println("Exiting to Staff Menu...");
                 return;
@@ -162,145 +263,35 @@ public class Booking {
             }
             
             if (isValidId) {
+                // correctly find the booking id and display booking list again
                 updateStaff(targetId, staffname);
-                shouldRefreshList = true; // 成功认领后，下次循环刷新列表
+                shouldRefreshList = true;
             } else {
-                // --- 关键点：输入错误时不重新打印列表，只打印错误信息 ---
+                // input error display error message and don't display booking list again 
                 System.out.println("❌ Invalid booking_id! Please enter a valid ID from the list.");
-                shouldRefreshList = false; // 报错后，不刷新列表，直接再次等待输入
+                shouldRefreshList = false;
             }
         }
     }
     
     public static void completeTraining(String staffname) {
         
-        viewStaffBooked(staffname);//display booking that equal staff name and status is BOOKED
-        
+        Filter.viewStaffBooked(staffname); //display booking that equal staff name and status is BOOKED
+            
         System.out.print("\nEnter booking_id to complete: ");
         String targetId = sc.nextLine().trim().toUpperCase(); // Makesure input format
-        
-        updateStatus(targetId);
+            
+        updateStatus(targetId); // update bookings.csv
     }
     
-    public static ArrayList<String> viewEmptyTrainingByDate(String targetDate, int time) {
-        ///根据当天array判断是否有空位
-        ArrayList<String> result = new ArrayList<>();
-        
-        System.out.println();//排版用
-        
-        //拿当天的booking array
-        ArrayList<String> bookings = filterBookingByDateTime(targetDate, time);
-        
-        int Yoga=0, HIIT=0, Chest=0, Arm=0, Leg=0, Bicep=0, Tricep=0, Abs=0, Back=0;
-
-        for (String line : bookings) {
-            //B0001,cyh,2026-03-25,10,Yoga,John,BOOKED
-            String[] data = line.split(",");
-
-            switch (data[4]) {
-                case "Yoga": Yoga++; break;
-                case "HIIT": HIIT++; break;
-                case "Chest": Chest++; break;
-                case "Arm": Arm++; break;
-                case "Leg": Leg++; break;
-                case "Bicep": Bicep++; break;
-                case "Tricep": Tricep++; break;
-                case "Abs": Abs++; break;
-                case "Back": Back++; break;
-            }
-        }
-
-        int max = 10;
-
-        // 只显示还有位置的
-        if (Yoga < max) result.add("1.Yoga (" + Yoga + "/" + max + ")");//yoga(2/10)
-        if (HIIT < max) result.add("2.HIIT (" + HIIT + "/" + max + ")");
-        if (Chest < max) result.add("3.Chest (" + Chest + "/" + max + ")");
-        if (Arm < max) result.add("4.Arm (" + Arm + "/" + max + ")");
-        if (Leg < max) result.add("5.Leg (" + Leg + "/" + max + ")");
-        if (Bicep < max) result.add("6.Bicep (" + Bicep + "/" + max + ")");
-        if (Tricep < max) result.add("7.Tricep (" + Tricep + "/" + max + ")");
-        if (Abs < max) result.add("8.Abs (" + Abs + "/" + max + ")");
-        if (Back < max) result.add("9.Back (" + Back + "/" + max + ")");
-
-        return result;
-    }
     
-    public static ArrayList<String> filterBookingWithOutStaff(String targetDate){
-        // find the bookings that are no staff select
-        ArrayList<String> result = new ArrayList<>();
-        
-        ArrayList<String> bookings = filterBookingByDate(targetDate);
-        
-        for (String line : bookings){
-            String[] data = line.split(",");
-            //B0006,user,2026-03-30,10,Yoga,null,BOOKED
-            if (data[2].equals(targetDate) && data[5].equals("null")) {
-                result.add(line);
-            }
-        }
-        return result;
-    }
-    
-    public static ArrayList<String> filterBookingByDateTime(String targetDate, int time) {
-        ///根据时间获得当天的booking array
-        ArrayList<String> result = new ArrayList<>();
-        
-        //拿当天的booking array
-        ArrayList<String> bookings = filterBookingByDate(targetDate);
-        
-        int targetTime = time;
-                
-        for (String line : bookings){
-            String[] data = line.split(",");
 
-            if (Integer.parseInt(data[3]) == targetTime) {
-                result.add(line);
-            }
-        }
-        return result;
-    }    
-    
-    public static ArrayList<String> filterBookingByDate(String targetDate) {
-        ///根据年月日获得当天的booking array
-        ArrayList<String> result = new ArrayList<>();
-        
-        try {
-            BufferedReader br = new BufferedReader(new FileReader("src/assignment/bookings.csv"));
-            //
-            String line;
-
-            while ((line = br.readLine()) != null) {
-                String[] data = line.split(",");
-                /*
-                data[0]=B0001
-                data[1]=user
-                */
-                
-                // skip header (if need)
-                if (data[0].equals("booking_id")) continue;
-
-                if (data[2].equals(targetDate)) {
-                    //B0001,cyh,2026-03-25,10,Yoga,John,BOOKED
-                    result.add(line);
-                    
-                }
-            }
-
-            br.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return result;
-    }
-    
     public static void updateStaff(String bookingId, String staffname) {
         //update bookings.csv
 
         ArrayList<String> updated = new ArrayList<>();
         
-        //crete "update" to store data
+        //crete "update" array to store data
         try {
             BufferedReader br = new BufferedReader(new FileReader("src/assignment/bookings.csv"));
             String line;
@@ -310,7 +301,7 @@ public class Booking {
 
                 if (data[0].equals(bookingId)) {
                     //B0003,user,2026-03-29,10,Back,null,BOOKED
-                    // 改 staff
+                    // change null to staff
                     data[5] = staffname;
 
                     line = String.join(",", data);
@@ -333,9 +324,9 @@ public class Booking {
         }
     }
     
-    public static boolean updateStatus(String targetId) {
+    public static void updateStatus(String targetId) {
         ArrayList<String> update = new ArrayList<>();
-        boolean found = false; // 增加一个标志位
+        boolean found = false; // valid control
 
         try {
             BufferedReader br = new BufferedReader(new FileReader("src/assignment/bookings.csv"));
@@ -361,44 +352,14 @@ public class Booking {
                     fw.write(l + "\n");
                 }
                 fw.close();
-                System.out.println("✅ Success: Training marked as COMPLETED!");
+                System.out.println(" Success: Training marked as COMPLETED!");
             } else {
-                System.out.println("❌ Error: Booking ID " + targetId + " not found!");
+                System.out.println(" Error: Booking ID: \"" + targetId + "\" not found!");
             }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return found; // 返回结果
-    }
-    
-    public static ArrayList<String> viewStaffBooked(String staffname){
-        // find the bookings that equal staff name and status is BOOKED
-        ArrayList<String> result = new ArrayList<>();
-       
-        //get booking that equal staff name and status is BOOKED
-        try {
-            BufferedReader br = new BufferedReader(new FileReader("src/assignment/bookings.csv"));
-            System.out.println("\n---------- bookings ----------" );
-            
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] data = line.split(",");
-                //B0006,user,2026-03-30,10,Yoga,null,BOOKED
-                
-                // only display the booking that equal staff name and status is BOOKED
-                if (data[5].equals(staffname) && data[6].equals("BOOKED")) {
-                    System.out.println(line);
-                }
-            }
-
-            br.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        
-        return result;
     }
     
     public static void viewTheDate() {
@@ -423,7 +384,7 @@ public class Booking {
         }
         
         //拿当天的booking array
-        ArrayList<String> bookings = filterBookingByDate(targetDate);
+        ArrayList<String> bookings = Filter.Date(targetDate);
         for(String line : bookings){
             System.out.println("========== booking ==========");
             System.out.println(line);
@@ -521,46 +482,15 @@ public class Booking {
         }
     }
     
-    public static void bookingTime() {
-        ///just display time that can be choose
-        
-        System.out.println("\nAvailable Time:");
-        System.out.println("1. 10AM ~ 12PM");
-        System.out.println("2. 1PM ~ 3PM");
-        System.out.println("3. 4PM ~ 6PM");
-        System.out.println("4. 7PM ~ 9PM");
-        System.out.println("Enter the no. to select time");
-    }
-    
-    public static int timeSelect(int timeChoice){
-        //timeChoice 1 2 3 4 to correct time
-        switch (timeChoice) {
-            case 1: return 10;
-            case 2: return 13;
-            case 3: return 16;
-            case 4: return 19;
-            default: return 0;
-        }
-    }
-    
-    public static String trainingSelect(int trainingChoice){
-        //timeChoice 1 2 3 4 to correct training
-        switch(trainingChoice){
-            case 1: return "Yoga";
-            case 2: return "HIIT";
-            case 3: return "Chest";
-            case 4: return "Arm";
-            case 5: return "Leg";
-            case 6: return "Bicep";
-            case 7: return "Tricep";
-            case 8: return "Abs";
-            case 9: return "Back";
-            default: return "Invalid";
-        }
-    }
-    
     public static String getValidatedDate(String year, String month, String day) {
-        ///check  the date is valid or not
+        /// check the date is valid or not
+
+        // check input is integer or not
+        if (!year.matches("\\d+") || !month.matches("\\d+") || !day.matches("\\d+")) {
+            // "\\d" = integer      "+" = at least one
+            return "INVALID";
+        }
+
         int y = Integer.parseInt(year);
         int m = Integer.parseInt(month);
         int d = Integer.parseInt(day);
@@ -582,5 +512,43 @@ public class Booking {
             return "INVALID";
         }
     }
-
+    
+    public static String trainingSelect(int trainingChoice){
+        //timeChoice 1 2 3 4 to correct training
+        switch(trainingChoice){
+            case 1: return "Yoga";
+            case 2: return "HIIT";
+            case 3: return "Chest";
+            case 4: return "Arm";
+            case 5: return "Leg";
+            case 6: return "Bicep";
+            case 7: return "Tricep";
+            case 8: return "Abs";
+            case 9: return "Back";
+            default: return "Invalid";
+        }
+    }
+    
+    public static int timeSelect(int timeChoice){
+        //timeChoice 1 2 3 4 to correct time
+        switch (timeChoice) {
+            case 1: return 10;
+            case 2: return 13;
+            case 3: return 16;
+            case 4: return 19;
+            default: return 0;
+        }
+    }
+    
+    public static void bookingTime() {
+        ///just display time that can be choose
+        
+        System.out.println("\nAvailable Time:");
+        System.out.println("1. 10AM ~ 12PM");
+        System.out.println("2. 1PM ~ 3PM");
+        System.out.println("3. 4PM ~ 6PM");
+        System.out.println("4. 7PM ~ 9PM");
+        System.out.println("Enter the no. to select time");
+    }
+    
 }
