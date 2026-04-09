@@ -9,6 +9,7 @@ package assignment;
  * @author User
  */
 
+import Booking.Booking;
 import java.util.Scanner;
 
 public class Main {
