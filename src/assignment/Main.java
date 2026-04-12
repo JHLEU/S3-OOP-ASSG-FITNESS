@@ -65,7 +65,7 @@ public class Main {
 
             switch (choice) {
                 case "1":
-                    Booking.page("user");
+                    Booking.userPage("user");
                     break;
                 case "2":
                     Booking.deletePage("user");
@@ -74,7 +74,7 @@ public class Main {
                     // Zerry
                     break;
                 case "0":
-                    return; // 回主菜单
+                    return; 
                 default:
                     System.out.println("Invalid choice!");
             }
@@ -94,10 +94,10 @@ public class Main {
 
             switch (choice) {
                 case "1":
-                    Booking.select("staff");
+                    Booking.staffSelectPage("staff");
                     break;
                 case "2":
-                    Booking.completeTraining("staff");
+                    Booking.staffCompleteTraining("staff");
                     break;
                 case "3":
                     //jianhow
