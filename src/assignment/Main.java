@@ -56,19 +56,19 @@ public class Main {
         while (true) {
             System.out.println("\n=== User Page ===");
             System.out.println("1. Booking");
-            System.out.println("2. Delete Booking");
+            System.out.println("2. View Booking");
             System.out.println("3. Tracking progress");
             System.out.println("0. Back");
             System.out.print("Enter choice: ");
 
             String choice = sc.nextLine();
-
+            
             switch (choice) {
                 case "1":
                     Booking.userPage("user");
                     break;
                 case "2":
-                    Booking.deletePage("user");
+                    Booking.viewPage("user");
                     break;
                 case "3":
                     // Zerry
