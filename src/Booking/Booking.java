@@ -4,6 +4,7 @@
  */
 package Booking;
 
+import static Booking.File.getData;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -105,7 +106,7 @@ public class Booking {
         File.add(username, targetDate, Method.timeSelect(timeChoice), Method.trainingSelect(trainingChoice));
     }
     
-    public static void deletePage(String username) {
+    public static void viewPage(String username) {
         /// user delete booking page
         String targetDate;
 
@@ -135,10 +136,19 @@ public class Booking {
         // -------------------- get user's booking --------------------
         ArrayList<String> bookings = File.userNamedate(username, targetDate);
 
-        System.out.println("\n=============== Booking ===============");
+        System.out.println("\n============= Booking =============");
 
         for (String line : bookings) {
-            System.out.println(line);
+            String[] data = line.split(",");
+            
+            System.out.println("---------------------------------");
+            System.out.println("Booking ID : " + data[0]);
+            System.out.println("Name       : " + data[1]);
+            System.out.println("Date       : " + data[2]);
+            System.out.println("Time       : " + Method.formatTime(data[3]) );
+            System.out.println("Type       : " + data[4]);
+            System.out.println("Trainer    : " + (data[5].equals("null") ? "-" : data[5]));
+            System.out.println("---------------------------------");
         }
 
         if (bookings.isEmpty()) {
@@ -147,7 +157,8 @@ public class Booking {
         }
 
         // -------------------- choose booking id --------------------
-        System.out.print("\nEnter booking_id to delete (or '0' to exit): ");
+        System.out.print("\nEnter booking_id to delete your booking");
+        System.out.print("\nIf you just want to view your booking that enter '0': ");
         String input = sc.nextLine().trim().toUpperCase();
 
         if (input.equals("0")) {
@@ -184,7 +195,7 @@ public class Booking {
 
         File.updateData(updated);
 
-        System.out.println("Booking deleted successfully!");
+        System.out.println("\nBooking deleted successfully!");
     }
 
     public static void staffSelectPage(String staffname) {
@@ -227,9 +238,13 @@ public class Booking {
             
             // only in needed that will display the booking list
             if (shouldRefreshList) {
-                System.out.println("\n---------- bookings ----------");
+                System.out.println("\n----------------- booking ------------------");
                 for (String line : bookings) {
-                    System.out.println(line);
+                    String[] data = line.split(",");
+                    
+                    System.out.println("\n------------------------------------------");
+                    System.out.println("Booking ID: " + data[0] + "\tName: " + data[1]);
+                    System.out.println("time: " + Method.formatTime(data[3])+ "\tType: " + data[4]);
                 }
             }
             
@@ -268,8 +283,21 @@ public class Booking {
     public static void staffCompleteTraining(String staffname) {
         /// staff completed training use this page
         
-        File.staffBooked(staffname); //display booking that equal staff name and status is BOOKED
-            
+        //display booking that equal staff name and status is BOOKED
+        ArrayList<String> bookings =File.staffBooked(staffname);
+        
+        if (bookings.isEmpty()) {
+            System.out.println("\nNo available booking for this date.");
+            return;
+        }
+        
+        for(String line : bookings){
+            String[] data = line.split(",");
+            System.out.println("\n------------------------------------------");
+            System.out.println("Booking ID: " + data[0] + "\tName: " + data[1]);
+            System.out.println("time: " + Method.formatTime(data[3])+ "\tType: " + data[4]);
+        }
+        
         System.out.print("\nEnter booking_id to complete: ");
         String targetId = sc.nextLine().trim().toUpperCase(); // Makesure input format
             

@@ -61,7 +61,7 @@ public class File {
             String[] data = line.split(",");
             //B0001,user,2026-03-30,10,Yoga, "staff" , "BOOKED" 
             if (data[5].equals(staffname) && data[6].equals("BOOKED")) {
-                System.out.println(line);
+                result.add(line);
             }
         }
         return result;

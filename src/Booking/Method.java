@@ -115,6 +115,20 @@ public class Method {
         }
     }
     
+    public static String formatTime(String time) {
+        int t = Integer.parseInt(time);
+
+        switch (t) {
+            case 10: return "10AM ~ 12PM";
+            case 13: return "1PM ~ 3PM";
+            case 16: return "4PM ~ 6PM";
+            case 19: return "7PM ~ 9PM";
+            default: return time; // fallback
+        }
+    }
+
+
+    
     public static void bookingTime() {
         /// just display time that can be choose
         
