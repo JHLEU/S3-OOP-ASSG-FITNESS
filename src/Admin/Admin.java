@@ -8,7 +8,7 @@ package Admin;
  *
  * @author User
  */
-
+import java.util.Scanner;
 public class Admin {
     private String Adminid;
     private String Password;
@@ -32,5 +32,12 @@ public class Admin {
     
     public void setPassword(String Password){
         this.Password = Password;
+    }
+    
+    public void AdminLogin(String Adminid, String Password){
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("--------Admin Log in--------");
+        System.out.println("Please insert your ID: ");
+        
     }
 }
