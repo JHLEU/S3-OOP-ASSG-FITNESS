@@ -35,7 +35,7 @@ public class Main {
                     break;
                 case "2":
                     if (UiClasses.trainerLogin()) {
-                    staffPage();
+                        staffPage();
                     } else {
                         System.out.println("Access denied.");
                     }

@@ -4,7 +4,6 @@
  */
 package Booking;
 
-import static Booking.File.getData;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -107,7 +106,8 @@ public class Booking {
     }
     
     public static void viewPage(String username) {
-        /// user delete booking page
+        /// user view and delete booking page
+        
         String targetDate;
 
         // -------------------- ask for date --------------------
