@@ -1,2 +1,2 @@
-username,password,totalSpent,tier
-kzz,123,200.0,Silver
+username,password,totalSpent,tier,isDeleted
+kzz,z,200.0,Bronze,false

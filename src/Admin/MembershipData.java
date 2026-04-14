@@ -16,11 +16,12 @@ public final class MembershipData {
     private String password;
     private double totalSpent;
 
-    public MembershipData(String username, String password, double totalSpent, String tier) {
+    public MembershipData(String username, String password, double totalSpent, String tier, boolean isDeleted) {
         this.username = username;
         this.password = password;
         this.totalSpent = totalSpent;
         this.tier = tier;
+        this.isDeleted = isDeleted;
         ranking(tier);
     }
     
@@ -68,6 +69,12 @@ public final class MembershipData {
     
     public void setIsDeleted(boolean isDeleted) {
         this.isDeleted = isDeleted;
+    }
+    
+
+    public void restoreAccount() {
+        this.isDeleted = false;
+        System.out.println("System: Account for " + username + " has been restored.");
     }
 
     // --- CHOICE METHOD (The Menu) ---

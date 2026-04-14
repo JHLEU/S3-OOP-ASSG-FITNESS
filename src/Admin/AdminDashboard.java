@@ -1,19 +1,11 @@
 package Admin;
 
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
-/**
- *
- * @author User
- */
 import java.util.Scanner;
 
 public class AdminDashboard {
     private static final Scanner sc = new Scanner(System.in);
     private final Readfile rf = new Readfile();
+    private final Restore restorer = new Restore();
     
     // File Paths
     private final String MEMBER_PATH = "src/member/members.csv";
@@ -23,8 +15,10 @@ public class AdminDashboard {
         while (true) {
             System.out.println("\n===== ADMIN DASHBOARD =====");
             System.out.println("1. Manage Members (Search/Update/Delete)");
-            System.out.println("2. Manage Trainers (Search/Bookings/Salary)");
-            System.out.println("3. Logout");
+            System.out.println("2. Restore Member");
+            System.out.println("3. Manage Trainers (Search/Bookings/Salary)");
+            System.out.println("4. Restore Trainer");
+            System.out.println("5. Logout");
             System.out.print("Choice: ");
             
             String choice = sc.nextLine();
@@ -32,11 +26,17 @@ public class AdminDashboard {
             switch (choice) {
                 case "1":
                     manageMembers();
-                    break; 
+                    break;
                 case "2":
-                    manageTrainers();
+                    restorer.restoreMember(); 
                     break;
                 case "3":
+                    manageTrainers();
+                    break;
+                case "4":
+                    restorer.restoreTrainer(); 
+                    break;
+                case "5":
                     System.out.println("Logging out...");
                     return;
                 default:
@@ -50,19 +50,17 @@ public class AdminDashboard {
         MembershipData[] members = rf.readMemberFile(MEMBER_PATH);
         System.out.print("Enter Member Username to search: ");
         String searchName = sc.nextLine();
-        
-        boolean found = false;
+
         for (MembershipData m : members) {
-            if (m != null && m.getUsername().equalsIgnoreCase(searchName)) {
-                m.manageMember(); // Opens the update/delete menu
-                rf.saveMemberFile(MEMBER_PATH, members); // Save changes immediately
-                found = true;
-                break;
+            if (m != null && m.getUsername().equalsIgnoreCase(searchName) && !m.isDeleted()) {
+                m.manageMember(); 
+                rf.saveMemberFile(MEMBER_PATH, members); 
+                return;
             }
         }
-        if (!found) System.out.println("Member not found.");
+        System.out.println("Active member not found.");
     }
-
+    
     private void manageTrainers() {
         TrainnerData[] trainers = rf.readTrainerFile(TRAINER_PATH);
         System.out.print("Enter Trainer ID to search (e.g. TR001): ");
@@ -70,13 +68,20 @@ public class AdminDashboard {
         
         boolean found = false;
         for (TrainnerData t : trainers) {
-            if (t != null && t.getId().equalsIgnoreCase(searchId)) {
-                t.manageTrainer(); // Opens the hours/bookings menu
-                // You would add rf.saveTrainerFile here if you implemented it
+            // Only search for active trainers
+            if (t != null && t.getId().equalsIgnoreCase(searchId) && !t.isDeleted()) {
+                t.manageTrainer(); // This triggers the sub-menu with Delete option
+                
+                // CRITICAL: Save the array to the CSV after the change
+                rf.saveTrainerFile(TRAINER_PATH, trainers); 
+                
                 found = true;
                 break;
             }
         }
-        if (!found) System.out.println("Trainer not found.");
+        
+        if (!found) {
+            System.out.println("Active trainer not found.");
+        }
     }
 }
