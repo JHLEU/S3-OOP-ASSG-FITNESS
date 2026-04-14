@@ -103,29 +103,34 @@ public final class TrainnerData {
         System.out.println("1. Update Hours");
         System.out.println("2. View Handled Bookings");
         System.out.println("3. DELETE");
+        System.out.println("4. RETURN"); // Updated to 4
         System.out.print("Choice: ");
-        int choice = sc.nextInt();
+        
+        // Using String input prevents the program from crashing if a user types a letter
+        String choice = sc.next(); 
         
         switch (choice) {
-            case 1:
+            case "1":
                 System.out.print("Enter total hours worked: ");
                 this.hours = sc.nextDouble();
-                calculateSalary();
+                calculateSalary(); // Ensure this method exists in your class
                 System.out.println("New Salary: RM" + salary);
                 break;
-            case 2:
-                viewBookings(); // Calls the search logic
+            case "2":
+                viewBookings(); 
                 break;
-            case 3:
+            case "3":
                 this.isDeleted = true;
                 System.out.println("Trainer marked for deletion.");
                 break;
+            case "4":
+                System.out.println("Returning to Dashboard...");
+                return; 
             default:
+                System.out.println("Invalid choice. Please try again.");
                 break;
         }
     }
-
-    
     
     @Override
     public String toString(){
