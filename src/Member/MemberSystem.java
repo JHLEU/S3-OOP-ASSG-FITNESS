@@ -130,7 +130,6 @@ public class MemberSystem {
             switch (choice) {
                 case "1": viewMyProgress(); break;
                 case "2": performTopUp(); break;
-<<<<<<< HEAD
                 case "3": 
                     BookingPage.userPage(currentUser.username); 
                     break;
