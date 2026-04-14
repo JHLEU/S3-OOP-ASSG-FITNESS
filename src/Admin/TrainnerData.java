@@ -9,5 +9,8 @@ package Admin;
  * @author User
  */
 public class TrainnerData {
+
+    public TrainnerData(String trim, String trim1, int par) {
+    }
     
 }
