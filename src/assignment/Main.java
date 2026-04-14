@@ -9,9 +9,11 @@ package assignment;
  * @author User
  */
 
-import Booking.Booking;
-import java.util.Scanner;
+import Booking.BookingPage;
 import UiPackage.UiClasses;
+import Admin.Admin;         
+import Admin.AdminDashboard;
+import java.util.Scanner;
 
 public class Main {
 
@@ -41,7 +43,11 @@ public class Main {
                     }
                     break;
                 case "3":
-                    //mengwei
+                    if (Admin.AdminLogin()) {
+                        adminPage(); // Launch the Admin-specific menu
+                    } else {
+                        System.out.println("Admin Access denied.");
+                    }
                     break;    
                 case "0":
                     System.out.println("Bye!");
@@ -50,6 +56,11 @@ public class Main {
                     System.out.println("Invalid choice!");
             }
         }
+    }
+    
+    public static void adminPage() {
+        AdminDashboard dashboard = new AdminDashboard();
+        dashboard.displayMenu();
     }
 
     public static void userPage() {
@@ -65,10 +76,10 @@ public class Main {
             
             switch (choice) {
                 case "1":
-                    Booking.userPage("user");
+                    BookingPage.userPage("user");
                     break;
                 case "2":
-                    Booking.viewPage("user");
+                    BookingPage.viewPage("user");
                     break;
                 case "3":
                     // Zerry
@@ -94,10 +105,10 @@ public class Main {
 
             switch (choice) {
                 case "1":
-                    Booking.staffSelectPage("staff");
+                    BookingPage.staffSelectPage("staff");
                     break;
                 case "2":
-                    Booking.staffCompleteTraining("staff");
+                    BookingPage.staffCompleteTraining("staff");
                     break;
                 case "3":
                     //jianhow
@@ -109,6 +120,5 @@ public class Main {
             }
         }
     }
-
     
 }
