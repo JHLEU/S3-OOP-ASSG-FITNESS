@@ -14,6 +14,7 @@ import UiPackage.UiClasses;
 import Admin.Admin;         
 import Admin.AdminDashboard;
 import java.util.Scanner;
+import static member.MemberSystem.showMainMenu;
 
 public class Main {
 
@@ -33,7 +34,7 @@ public class Main {
 
             switch (choice) {
                 case "1":
-                    userPage();
+                    showMainMenu();
                     break;
                 case "2":
                     if (UiClasses.trainerLogin()) {
