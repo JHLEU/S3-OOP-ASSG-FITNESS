@@ -8,6 +8,6 @@ package Admin;
  *
  * @author User
  */
-public class TrainnerData {
+public class CheckBooking {
     
 }
