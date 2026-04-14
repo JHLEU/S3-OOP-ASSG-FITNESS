@@ -1,6 +1,6 @@
 package member;
 
-import Booking.Booking;
+import Booking.BookingPage;
 import java.io.*;
 import java.util.*;
 
@@ -107,7 +107,7 @@ public class MemberSystem {
             switch (choice) {
                 case "1": viewMyProgress(); break;
                 case "2": performTopUp(); break;
-                case "3": Booking.userPage(currentUser.username); break;
+                case "3": BookingPage.viewPage(currentUser.username); break;
                 case "4": currentUser = null; break;
                 default: System.out.println("Invalid choice.");
             }

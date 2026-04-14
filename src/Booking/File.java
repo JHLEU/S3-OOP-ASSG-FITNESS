@@ -8,7 +8,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.ArrayList;
-
 /**
  *
  * @author Yi Hang
@@ -16,108 +15,109 @@ import java.util.ArrayList;
 public class File {
     /// read and writer bookings.csv function
     
-    public static ArrayList<String> getData(){
-        /// get data from bookings.csv
-        
-         ArrayList<String> result = new ArrayList<>();
+    public static ArrayList<Booking> getData() {
+        /// get data
+        ArrayList<Booking> list = new ArrayList<>();
 
         try {
             BufferedReader br = new BufferedReader(new FileReader("src/Booking/bookings.csv"));
             String line;
+
             while ((line = br.readLine()) != null) {
-                result.add(line);
+
+                String[] data = line.split(",");
+
+                // skip header
+                if (data[0].equals("booking_id")) {
+                    continue;
+                }
+
+                Booking b = new Booking(data[0],data[1],data[2],data[3],data[4],data[5],data[6]);
+
+                list.add(b);
             }
+
             br.close();
-            
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return result;
+
+        return list;
     }
-    
-    public static ArrayList<String> userNamedate(String username, String targetDate) {
+
+    public static ArrayList<Booking> userNamedate(String username, String targetDate) {
         /// filter target username, target date, status = BOOKED
         
-        ArrayList<String> result = new ArrayList<>();
-        ArrayList<String> bookings = getData();
+        ArrayList<Booking> result = new ArrayList<>();
+        ArrayList<Booking> bookings = getData();
         
-        for (String line : bookings){
-            String[] data = line.split(",");
-            //B0001, "user" , "2026-03-30" ,10,Yoga,null, "BOOKED" 
-            if (data[1].equals(username) && data[2].equals(targetDate) && data[6].equals("BOOKED")) {
-                result.add(line);
+        for (Booking o : bookings){
+            if (o.getUsername().equals(username) && o.getDate().equals(targetDate) && o.getStatus().equals("BOOKED")) {
+                result.add(o);
             }
         }
         return result;
     }
     
-    public static ArrayList<String> staffBooked(String staffname){
+    public static ArrayList<Booking> staffBooked(String staffname){
         /// filter staff name and status = BOOKED
         
-        ArrayList<String> result = new ArrayList<>();
-        ArrayList<String> bookings = getData();
+        ArrayList<Booking> result = new ArrayList<>();
+        ArrayList<Booking> bookings = getData();
         
-        for(String line : bookings){
-            String[] data = line.split(",");
+        for(Booking o : bookings){
             //B0001,user,2026-03-30,10,Yoga, "staff" , "BOOKED" 
-            if (data[5].equals(staffname) && data[6].equals("BOOKED")) {
-                result.add(line);
+            if (o.getStaff().equals(staffname) && o.getStatus().equals("BOOKED")) {
+                result.add(o);
             }
         }
         return result;
     }
     
-    public static ArrayList<String> date(String targetDate) {
+    public static ArrayList<Booking> date(String targetDate) {
         /// filter target date
         
-        ArrayList<String> result = new ArrayList<>();
-        ArrayList<String> bookings = getData();
+        ArrayList<Booking> result = new ArrayList<>();
+        ArrayList<Booking> bookings = getData();
         
-        for(String line : bookings){
-            String[] data = line.split(",");
-            
-            // skip header (if need)
-            if (data[0].equals("booking_id")) continue;
-
-            if (data[2].equals(targetDate)) {
+        for(Booking o : bookings){
+            if (o.getDate().equals(targetDate)) {
                 //B0001,cyh, "2026-03-25" ,10,Yoga,John,BOOKED
-                result.add(line);
+                result.add(o);
             }
         }
         return result;
     }
     
-    public static ArrayList<String> withOutStaff(String targetDate){
+    public static ArrayList<Booking> withOutStaff(String targetDate){
         /// filter target date and staff = null
         
-        ArrayList<String> result = new ArrayList<>();
-        ArrayList<String> bookings = date(targetDate);
+        ArrayList<Booking> result = new ArrayList<>();
+        ArrayList<Booking> bookings = date(targetDate);
         
-        for (String line : bookings){
-            String[] data = line.split(",");
-            //B0006,user, "2026-03-30" ,10,Yoga, "null" ,BOOKED
-            if (data[2].equals(targetDate) && data[5].equals("null")) {
-                result.add(line);
+        for (Booking o : bookings){
+            if (o.getDate().equals(targetDate) && o.getStaff().equals("null")) {
+                result.add(o);
             }
         }
         return result;
     }
     
-    public static ArrayList<String> viewEmptyTrainingByDate(String targetDate, int targetTime) {
+    public static ArrayList<TrainingSlot> viewEmptyTrainingByDate(String targetDate, String targetTime) {
         /// filter target date have empty or not
         
-        ArrayList<String> result = new ArrayList<>();
-        ArrayList<String> bookings = date(targetDate);
+        ArrayList<TrainingSlot> result = new ArrayList<>();
+        ArrayList<Booking> bookings = date(targetDate);
         int Yoga=0, HIIT=0, Chest=0, Arm=0, Leg=0, Bicep=0, Tricep=0, Abs=0, Back=0;
         
         System.out.println(); // display layout
         
-        for (String line : bookings) {
-            String[] data = line.split(",");
+        for (Booking o : bookings) {
             
             //B0001,cyh,2026-03-25, "10" ,Yoga,John,BOOKED
-            if (Integer.parseInt(data[3]) == targetTime) {
-                switch (data[4]) {
+            if (o.getTime().equals(targetTime)) {
+                switch (o.getTraining()) {
                     case "Yoga": Yoga++; break;
                     case "HIIT": HIIT++; break;
                     case "Chest": Chest++; break;
@@ -134,52 +134,48 @@ public class File {
         int max = 10;
 
         // only add array if have empty
-        if (Yoga < max) result.add("1.Yoga (" + Yoga + "/" + max + ")");//yoga(2/10)
-        if (HIIT < max) result.add("2.HIIT (" + HIIT + "/" + max + ")");
-        if (Chest < max) result.add("3.Chest (" + Chest + "/" + max + ")");
-        if (Arm < max) result.add("4.Arm (" + Arm + "/" + max + ")");
-        if (Leg < max) result.add("5.Leg (" + Leg + "/" + max + ")");
-        if (Bicep < max) result.add("6.Bicep (" + Bicep + "/" + max + ")");
-        if (Tricep < max) result.add("7.Tricep (" + Tricep + "/" + max + ")");
-        if (Abs < max) result.add("8.Abs (" + Abs + "/" + max + ")");
-        if (Back < max) result.add("9.Back (" + Back + "/" + max + ")");
+        if (Yoga < max) result.add(new TrainingSlot("Yoga", Yoga, max));
+        if (HIIT < max) result.add(new TrainingSlot("HIIT", HIIT, max));
+        if (Chest < max) result.add(new TrainingSlot("Chest", Chest, max));
+        if (Arm < max) result.add(new TrainingSlot("Arm", Arm, max));
+        if (Leg < max) result.add(new TrainingSlot("Leg", Leg, max));
+        if (Bicep < max) result.add(new TrainingSlot("Bicep", Bicep, max));
+        if (Tricep < max) result.add(new TrainingSlot("Tricep", Tricep, max));
+        if (Abs < max) result.add(new TrainingSlot("Abs", Abs, max));
+        if (Back < max) result.add(new TrainingSlot("Back", Back, max));
 
         return result;
     }
     
-    public static void updateData(ArrayList<String> data) {
-        /// update data to bookings.csv
-        
-        try {
-            FileWriter fw = new FileWriter("src/Booking/bookings.csv");
+    public static void updateData(ArrayList<Booking> booking) {
 
-            for (String line : data) {
-                fw.write(line + "\n");
+        try (FileWriter fw = new FileWriter("src/Booking/bookings.csv")) {
+
+            // header
+            fw.write("booking_id,username,date,time,training,staff,status\n");
+
+            for (Booking o : booking) {
+                fw.write(o.toCSV() + "\n");
             }
-
-            fw.close();
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-}
-    
+    }
+
     public static void updateStaff(String bookingId, String staffname) {
         /// updata staff name to boogkings.csv
         
-        ArrayList<String> updated = new ArrayList<>();
-        ArrayList<String> booking = File.getData();
+        ArrayList<Booking> updated = new ArrayList<>();
+        ArrayList<Booking> booking = File.getData();
 
 
-        for (String line : booking) {
-            String[] data = line.split(",");
-
-            if (data[0].equals(bookingId)) {
-                data[5] = staffname;
-                line = String.join(",", data);
+        for (Booking o : booking) {
+            if (o.getBookingId().equals(bookingId)) {
+                o.setStaff(staffname);
             }
-
-            updated.add(line);
+            
+           updated.add(o);
         }
 
         updateData(updated);
@@ -188,65 +184,39 @@ public class File {
     public static void updateStatus(String targetId) {
         /// update status = COMPLETED to boogkings.csv
         
-        ArrayList<String> updated = new ArrayList<>();
-        ArrayList<String> booking = File.getData();
+        ArrayList<Booking> updated = new ArrayList<>();
+        ArrayList<Booking> booking = File.getData();
         
         boolean found = false;
 
-        for (String line : booking) {
-            String[] data = line.split(",");
-
-            if (data[0].equals(targetId)) {
-                data[6] = "COMPLETED";
-                line = String.join(",", data);
+        for (Booking o : booking) {
+            if (o.getBookingId().equals(targetId)) {
+                o.setStatus("COMPLETED");
                 found = true;
             }
 
-            updated.add(line);
+            updated.add(o);
         }
 
         if (found) {
-            File.updateData(updated);
+            updateData(updated);
             System.out.println("Success: Training marked as COMPLETED!");
         } else {
             System.out.println("Error: Booking ID not found!");
         }
     }
     
-    public static void appendData(String line) {
-        /// append data to boogkings.csv
+    public static void appendData(Booking b) {
+        /// add data to bookings.csv
         
         try {
             FileWriter fw = new FileWriter("src/Booking/bookings.csv", true);
-            fw.write(line + "\n");
+            fw.write(b.toCSV() + "\n"); // 自动调用 toString()
             fw.close();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
     
-    public static void add(String username, String targetDate, int time, String training) {
-            /// formating data to appendData method
-            
-            // booking id 
-            String booking_id = Method.generateBookingId();
-                    
-            // staff 
-            String staff = null;
-            
-            // status 
-            String status = "BOOKED";
-            
-            //------------------- process ------------------------
-            File.appendData(
-                booking_id + "," + 
-                username  + "," + 
-                targetDate + "," + 
-                time + "," + 
-                training + "," + 
-                staff + "," + 
-                status
-            );
-    }
-
 }

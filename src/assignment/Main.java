@@ -9,11 +9,11 @@ package assignment;
  * @author User
  */
 
-import Booking.Booking;
-import java.util.Scanner;
+import Booking.BookingPage;
 import UiPackage.UiClasses;
 import Admin.Admin;         
 import Admin.AdminDashboard;
+import java.util.Scanner;
 
 public class Main {
 
@@ -76,10 +76,10 @@ public class Main {
             
             switch (choice) {
                 case "1":
-                    Booking.userPage("user");
+                    BookingPage.userPage("user");
                     break;
                 case "2":
-                    Booking.viewPage("user");
+                    BookingPage.viewPage("user");
                     break;
                 case "3":
                     // Zerry
@@ -105,10 +105,10 @@ public class Main {
 
             switch (choice) {
                 case "1":
-                    Booking.staffSelectPage("staff");
+                    BookingPage.staffSelectPage("staff");
                     break;
                 case "2":
-                    Booking.staffCompleteTraining("staff");
+                    BookingPage.staffCompleteTraining("staff");
                     break;
                 case "3":
                     //jianhow
@@ -120,6 +120,5 @@ public class Main {
             }
         }
     }
-
     
 }
