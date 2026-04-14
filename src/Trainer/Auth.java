@@ -41,6 +41,8 @@ public class Auth {
 	}
 
 	public static boolean verifyLogin(String trainerId, String password) {
+                
+                
 		if (!isValidTrainerIdFormat(trainerId) || password == null || password.isBlank()) {
 			return false;
 		}
@@ -69,8 +71,13 @@ public class Auth {
 
 				String fileId = parts[0].trim().toUpperCase(Locale.ROOT);
 				String filePassword = parts[4].trim();
+                                String fileIsDeleted = parts[5].trim().toLowerCase();
 
 				if (fileId.equals(normalizedId) && filePassword.equals(password)) {
+                                    if (fileIsDeleted.equals("true")) {
+                                        System.out.println("Login Failed: This account has been deleted.");
+                                        return false;
+                                    }
 					return true;
 				}
 			}
