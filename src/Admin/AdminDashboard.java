@@ -1,14 +1,5 @@
 package Admin;
 
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
-/**
- *
- * @author User
- */
 import java.util.Scanner;
 
 public class AdminDashboard {
@@ -26,7 +17,7 @@ public class AdminDashboard {
             System.out.println("1. Manage Members (Search/Update/Delete)");
             System.out.println("2. Restore Member");
             System.out.println("3. Manage Trainers (Search/Bookings/Salary)");
-            System.out.println("4. Restore Trainner");
+            System.out.println("4. Restore Trainer");
             System.out.println("5. Logout");
             System.out.print("Choice: ");
             
@@ -37,13 +28,13 @@ public class AdminDashboard {
                     manageMembers();
                     break;
                 case "2":
-                    restorer.restoreMember(); // Call the method in Restore.java
+                    restorer.restoreMember(); 
                     break;
                 case "3":
                     manageTrainers();
                     break;
                 case "4":
-                    restorer.restoreTrainer(); // Call the method in Restore.java
+                    restorer.restoreTrainer(); 
                     break;
                 case "5":
                     System.out.println("Logging out...");
@@ -61,7 +52,6 @@ public class AdminDashboard {
         String searchName = sc.nextLine();
 
         for (MembershipData m : members) {
-            // FIX: Added !m.isDeleted() so you only "Manage" active people
             if (m != null && m.getUsername().equalsIgnoreCase(searchName) && !m.isDeleted()) {
                 m.manageMember(); 
                 rf.saveMemberFile(MEMBER_PATH, members); 
@@ -78,14 +68,20 @@ public class AdminDashboard {
         
         boolean found = false;
         for (TrainnerData t : trainers) {
-            if (t != null && t.getId().equalsIgnoreCase(searchId)) {
-                t.manageTrainer(); // Opens the hours/bookings menu
-                // You would add rf.saveTrainerFile here if you implemented it
+            // Only search for active trainers
+            if (t != null && t.getId().equalsIgnoreCase(searchId) && !t.isDeleted()) {
+                t.manageTrainer(); // This triggers the sub-menu with Delete option
+                
+                // CRITICAL: Save the array to the CSV after the change
+                rf.saveTrainerFile(TRAINER_PATH, trainers); 
+                
                 found = true;
                 break;
             }
         }
-        if (!found) System.out.println("Trainer not found.");
+        
+        if (!found) {
+            System.out.println("Active trainer not found.");
+        }
     }
-    
 }

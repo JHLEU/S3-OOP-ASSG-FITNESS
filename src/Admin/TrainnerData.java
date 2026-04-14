@@ -60,8 +60,8 @@ public final class TrainnerData {
         return isDeleted; 
     }
     
-    public void setIsDeleted(boolean isDeleted){
-        this.isDeleted = isDeleted;
+    public void setIsDeleted(boolean status){
+        this.isDeleted = status;
     }
     
     public void calculateSalary() { 
@@ -99,8 +99,10 @@ public final class TrainnerData {
 
     public void manageTrainer() {
         Scanner sc = new Scanner(System.in);
-        System.out.println("\n--- Trainer: " + name + " ---");
-        System.out.println("1. Update Hours | 2. View Handled Bookings | 3. DELETE");
+        System.out.println("\n=== Trainer: " + name + " ===");
+        System.out.println("1. Update Hours");
+        System.out.println("2. View Handled Bookings");
+        System.out.println("3. DELETE");
         System.out.print("Choice: ");
         int choice = sc.nextInt();
         

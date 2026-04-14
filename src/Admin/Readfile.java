@@ -63,10 +63,13 @@ public class Readfile {
             String line;
             br.readLine(); // skip header
             while ((line = br.readLine()) != null) {
-                String[] data = line.split(",");
-                if (data.length >= 2) {
-                    // Using trainerID and Name. Defaulting hours to 0 initially.
-                    trainerArray[count] = new TrainnerData(data[0].trim(), data[1].trim(), 0);
+                String[] d = line.split(",");
+                if (d.length >= 2) {
+                    // Check if the 6th column (index 5) exists for the deleted status
+                    boolean status = (d.length >= 6) ? Boolean.parseBoolean(d[5].trim()) : false;
+
+                    trainerArray[count] = new TrainnerData(d[0].trim(), d[1].trim(), 0);
+                    trainerArray[count].setIsDeleted(status); // Apply the status from file
                     count++;
                 }
             }
@@ -99,18 +102,23 @@ public class Readfile {
     }
 
     // 5. Saving Trainer Changes back to CSV
-    public void saveTrainerFile(String filename, TrainnerData[] trainerArray) {
-        try (PrintWriter pw = new PrintWriter(new FileWriter(filename))) {
-            pw.println("trainerID,Name,JoinDate,Sallary,Password");
+        public void saveTrainerFile(String filename, TrainnerData[] trainerArray) {
+        // try-with-resources automatically closes and flushes the data
+        try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(filename)))) {
+            pw.println("trainerID,Name,JoinDate,Sallary,Password,isDeleted"); 
+
             for (TrainnerData t : trainerArray) {
-                if (t != null && !t.isDeleted()) {
-                    // Placeholder for date and password to match teammate's CSV format
-                    pw.println(t.getId() + "," + t.getname() + ",1-1-2026," + (t.gethours() * 15) + ",@Abc123");
+                if (t != null) {
+                    // We use placeholders for JoinDate and Password to stay compatible
+                    pw.println(t.getId() + "," + 
+                               t.getname() + ",1-1-2026,2000,@Abc123," + 
+                               t.isDeleted()); 
                 }
             }
-            System.out.println("Trainer file updated.");
+            System.out.println("System: Trainer file successfully updated.");
         } catch (IOException e) {
-            System.out.println("Error saving trainer file: " + e.getMessage());
+            System.out.println("CRITICAL ERROR: Could not write to " + filename);
+            e.printStackTrace(); // This will tell us if Windows is blocking the file
         }
     }
 }
