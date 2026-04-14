@@ -12,6 +12,8 @@ package assignment;
 import Booking.Booking;
 import java.util.Scanner;
 import UiPackage.UiClasses;
+import Admin.Admin;         
+import Admin.AdminDashboard;
 
 public class Main {
 
@@ -41,7 +43,11 @@ public class Main {
                     }
                     break;
                 case "3":
-                    //mengwei
+                    if (Admin.AdminLogin()) {
+                        adminPage(); // Launch the Admin-specific menu
+                    } else {
+                        System.out.println("Admin Access denied.");
+                    }
                     break;    
                 case "0":
                     System.out.println("Bye!");
@@ -50,6 +56,11 @@ public class Main {
                     System.out.println("Invalid choice!");
             }
         }
+    }
+    
+    public static void adminPage() {
+        AdminDashboard dashboard = new AdminDashboard();
+        dashboard.displayMenu();
     }
 
     public static void userPage() {
