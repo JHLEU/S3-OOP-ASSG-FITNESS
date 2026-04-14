@@ -14,6 +14,7 @@ import java.util.Scanner;
 public class AdminDashboard {
     private static final Scanner sc = new Scanner(System.in);
     private final Readfile rf = new Readfile();
+    private final Restore restorer = new Restore();
     
     // File Paths
     private final String MEMBER_PATH = "src/member/members.csv";
@@ -23,8 +24,10 @@ public class AdminDashboard {
         while (true) {
             System.out.println("\n===== ADMIN DASHBOARD =====");
             System.out.println("1. Manage Members (Search/Update/Delete)");
-            System.out.println("2. Manage Trainers (Search/Bookings/Salary)");
-            System.out.println("3. Logout");
+            System.out.println("2. Restore Member");
+            System.out.println("3. Manage Trainers (Search/Bookings/Salary)");
+            System.out.println("4. Restore Trainner");
+            System.out.println("5. Logout");
             System.out.print("Choice: ");
             
             String choice = sc.nextLine();
@@ -32,11 +35,17 @@ public class AdminDashboard {
             switch (choice) {
                 case "1":
                     manageMembers();
-                    break; 
+                    break;
                 case "2":
-                    manageTrainers();
+                    restorer.restoreMember(); // Call the method in Restore.java
                     break;
                 case "3":
+                    manageTrainers();
+                    break;
+                case "4":
+                    restorer.restoreTrainer(); // Call the method in Restore.java
+                    break;
+                case "5":
                     System.out.println("Logging out...");
                     return;
                 default:
@@ -50,19 +59,18 @@ public class AdminDashboard {
         MembershipData[] members = rf.readMemberFile(MEMBER_PATH);
         System.out.print("Enter Member Username to search: ");
         String searchName = sc.nextLine();
-        
-        boolean found = false;
+
         for (MembershipData m : members) {
-            if (m != null && m.getUsername().equalsIgnoreCase(searchName)) {
-                m.manageMember(); // Opens the update/delete menu
-                rf.saveMemberFile(MEMBER_PATH, members); // Save changes immediately
-                found = true;
-                break;
+            // FIX: Added !m.isDeleted() so you only "Manage" active people
+            if (m != null && m.getUsername().equalsIgnoreCase(searchName) && !m.isDeleted()) {
+                m.manageMember(); 
+                rf.saveMemberFile(MEMBER_PATH, members); 
+                return;
             }
         }
-        if (!found) System.out.println("Member not found.");
+        System.out.println("Active member not found.");
     }
-
+    
     private void manageTrainers() {
         TrainnerData[] trainers = rf.readTrainerFile(TRAINER_PATH);
         System.out.print("Enter Trainer ID to search (e.g. TR001): ");
@@ -79,4 +87,5 @@ public class AdminDashboard {
         }
         if (!found) System.out.println("Trainer not found.");
     }
+    
 }
