@@ -15,6 +15,88 @@ import java.util.Scanner;
 public class UiClasses {
     private static final Scanner sc = new Scanner(System.in);
 
+    public static void showTrainerRegistrationHeader() {
+        System.out.println("\n=== Trainer Registration ===");
+    }
+
+    public static String promptTrainerName() {
+        System.out.print("Enter Name: ");
+        return sc.nextLine();
+    }
+
+    public static String promptJoinDate() {
+        System.out.print("Enter Join Date (e.g., 1-1-2026): ");
+        return sc.nextLine();
+    }
+
+    public static String promptPassword() {
+        System.out.print("Enter Password: ");
+        return sc.nextLine();
+    }
+
+    public static void showInvalidPasswordFormat() {
+        System.out.println("Invalid password format.");
+        System.out.println("Password must be at least 6 characters and include uppercase, lowercase, number, and symbol.");
+    }
+
+    public static void showDuplicateTrainerName() {
+        System.out.println("Trainer Name already exists. Please enter a unique Name.");
+    }
+
+    public static void showAssignedTrainerId(String trainerId) {
+        System.out.println("System assigned Trainer ID: " + trainerId);
+    }
+
+    public static boolean promptYesNo(String message) {
+        while (true) {
+            System.out.print(message);
+            String input = sc.nextLine();
+            if (input.equalsIgnoreCase("y")) {
+                return true;
+            }
+            if (input.equalsIgnoreCase("n")) {
+                return false;
+            }
+            System.out.println("Invalid choice. Please enter y or n.");
+        }
+    }
+
+    public static void showRegistrationCancelled() {
+        System.out.println("Registration cancelled.");
+    }
+
+    public static void showRegistrationSuccess(String trainerId) {
+        System.out.println("Trainer registered successfully! Your Trainer ID is: " + trainerId);
+    }
+
+    // Trainer authentication menu: choose login or register
+    public static void trainerAuthPage() {
+        while (true) {
+            System.out.println("\n=== Trainer Authentication ===");
+            System.out.println("1. Login");
+            System.out.println("2. Register");
+            System.out.println("0. Back");
+            System.out.print("Enter choice: ");
+            String choice = sc.nextLine();
+            switch (choice) {
+                case "1":
+                    if (trainerLogin()) {
+                        staffPage();
+                    } else {
+                        System.out.println("Access denied.");
+                    }
+                    break;
+                case "2":
+                    Trainer.TrainerRegister.registerPage();
+                    break;
+                case "0":
+                    return;
+                default:
+                    System.out.println("Invalid choice!");
+            }
+        }
+    }
+
     public static boolean trainerLogin() {
         int attempts = 3;
 

@@ -37,11 +37,7 @@ public class Main {
                     showMainMenu();
                     break;
                 case "2":
-                    if (UiClasses.trainerLogin()) {
-                        UiClasses.staffPage();
-                    } else {
-                        System.out.println("Access denied.");
-                    }
+                    UiClasses.trainerAuthPage();
                     break;
                 case "3":
                     if (Admin.AdminLogin()) {
