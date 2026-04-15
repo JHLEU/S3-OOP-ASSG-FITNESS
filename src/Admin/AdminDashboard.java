@@ -1,6 +1,7 @@
 package Admin;
 
 import java.util.Scanner;
+import Trainer.ReportEquipment;
 
 public class AdminDashboard {
     private static final Scanner sc = new Scanner(System.in);
@@ -18,7 +19,9 @@ public class AdminDashboard {
             System.out.println("2. Restore Member");
             System.out.println("3. Manage Trainers (Search/Bookings/Salary)");
             System.out.println("4. Restore Trainer");
-            System.out.println("5. Logout");
+            long brokenCount = ReportEquipment.countBrokenEquipment();
+            System.out.printf("5. Manage Equipment Condition (%d equipment broken)\n", brokenCount);
+            System.out.println("6. Logout");
             System.out.print("Choice: ");
             
             String choice = sc.nextLine();
@@ -37,6 +40,9 @@ public class AdminDashboard {
                     restorer.restoreTrainer(); 
                     break;
                 case "5":
+                    Admin.manageEquipmentCondition();
+                    break;
+                case "6":
                     System.out.println("Logging out...");
                     return;
                 default:

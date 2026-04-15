@@ -6,7 +6,9 @@
 package UiPackage;
 
 import Booking.BookingPage;
+import Trainer.ReportEquipment;
 import java.util.Scanner;
+import java.util.List;
 
 /**
  *
@@ -80,8 +82,9 @@ public class UiClasses {
             String choice = sc.nextLine();
             switch (choice) {
                 case "1":
-                    if (trainerLogin()) {
-                        staffPage();
+                    String loggedInTrainerName = trainerLogin();
+                    if (loggedInTrainerName != null) {
+                        staffPage(loggedInTrainerName);
                     } else {
                         System.out.println("Access denied.");
                     }
@@ -97,7 +100,7 @@ public class UiClasses {
         }
     }
 
-    public static boolean trainerLogin() {
+    public static String trainerLogin() {
         int attempts = 3;
 
         while (attempts > 0) {
@@ -115,9 +118,10 @@ public class UiClasses {
             System.out.print("Enter Password: ");
             String password = sc.nextLine();
 
-            if (Trainer.Auth.verifyLogin(trainerId, password)) {
-                System.out.println("Login successful.");
-                return true;
+            String loggedInTrainerName = Trainer.Auth.verifyLogin(trainerId, password);
+            if (loggedInTrainerName != null) {
+                System.out.println("Login successful. Welcome, " + loggedInTrainerName + "!");
+                return loggedInTrainerName; // Return the logged-in trainer's name
             }
 
             System.out.println("Invalid Trainer ID or password.");
@@ -125,15 +129,18 @@ public class UiClasses {
             System.out.println("Attempts left: " + attempts);
         }
 
-        return false;
+        return null;
     }
 
-    public static void staffPage() {
+    public static void staffPage(String loggedInTrainerName) {
         while (true) {
+            long brokenCount = ReportEquipment.countBrokenEquipment();
+
             System.out.println("\n=== Staff Page ===");
+            System.out.println("Welcome, " + loggedInTrainerName + "!");
             System.out.println("1. Select Booking");
             System.out.println("2. Complete Booking");
-            System.out.println("3. Report equipment");
+            System.out.printf("3. Report Equipment (%d equipment broken)\n", brokenCount);
             System.out.println("0. Back");
             System.out.print("Enter choice: ");
 
@@ -141,18 +148,72 @@ public class UiClasses {
 
             switch (choice) {
                 case "1":
-                    BookingPage.staffSelectPage("staff");
+                    BookingPage.staffSelectPage(loggedInTrainerName);
                     break;
                 case "2":
-                    BookingPage.staffCompleteTraining("staff");
+                    BookingPage.staffCompleteTraining(loggedInTrainerName);
                     break;
                 case "3":
-                    //jianhow
+                    equipmentReportPage();
                     break;
                 case "0":
                     return;
                 default:
-                    System.out.println("Invalid choice!");
+                    System.out.println("Invalid choice! Please try again.");
+            }
+        }
+    }
+
+    public static void equipmentReportPage() {
+        while (true) {
+            List<ReportEquipment> equipmentList = ReportEquipment.loadAll();
+
+            System.out.println("\n=== Equipment Status ===");
+            for (int i = 0; i < equipmentList.size(); i++) {
+                ReportEquipment equipment = equipmentList.get(i);
+                System.out.println((i + 1) + ". " + equipment.getEquipmentId() + " - "
+                    + equipment.getEquipmentName() + " - " + equipment.getCondition());
+            }
+
+            System.out.println("0. Back");
+            System.out.print("Select equipment number to mark as broken: ");
+            String choice = sc.nextLine();
+
+            if (choice.equals("0")) {
+                return;
+            }
+
+            int selectedIndex;
+            try {
+                selectedIndex = Integer.parseInt(choice) - 1;
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input.");
+                continue;
+            }
+
+            if (selectedIndex < 0 || selectedIndex >= equipmentList.size()) {
+                System.out.println("Invalid equipment selection.");
+                continue;
+            }
+
+            ReportEquipment selectedEquipment = equipmentList.get(selectedIndex);
+            System.out.println("Selected: " + selectedEquipment.getEquipmentName() +
+                " (Current status: " + selectedEquipment.getCondition() + ")");
+
+            if (selectedEquipment.getCondition().equalsIgnoreCase("Broken")) {
+                System.out.println("This equipment is already marked as Broken.");
+                continue;
+            }
+
+            if (!promptYesNo("Mark this equipment as Broken? (y/n): ")) {
+                continue;
+            }
+
+            boolean saved = ReportEquipment.markEquipmentBrokenByIndex(selectedIndex);
+            if (saved) {
+                System.out.println("Equipment status updated to Broken.");
+            } else {
+                System.out.println("Failed to update equipment status.");
             }
         }
     }
