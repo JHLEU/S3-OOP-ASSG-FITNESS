@@ -10,6 +10,8 @@ package Admin;
  */
 import java.util.Scanner;
 import Trainer.Auth; // You MUST import this to use Trainer's logic
+import Trainer.ReportEquipment;
+import java.util.List;
 
 public class Admin {
     private static final Scanner sc = new Scanner(System.in);
@@ -103,6 +105,32 @@ public class Admin {
     public boolean verify(String inputId, String inputPass) {
         return this.Adminid.equals(inputId) && this.Password.equals(inputPass);
     }
+
+    public static void manageEquipmentCondition() {
+        Scanner sc = new Scanner(System.in);
+        List<ReportEquipment> equipmentList = ReportEquipment.loadAll();
+
+        System.out.println("\n=== Manage Equipment Condition ===");
+        for (int i = 0; i < equipmentList.size(); i++) {
+            ReportEquipment equipment = equipmentList.get(i);
+            System.out.printf("%d. %s (%s) - %s\n", i + 1, equipment.getEquipmentName(), equipment.getEquipmentId(), equipment.getCondition());
+        }
+
+        System.out.print("\nEnter the equipment number to toggle condition: ");
+        int choice = sc.nextInt();
+        sc.nextLine(); // Consume newline
+
+        if (choice < 1 || choice > equipmentList.size()) {
+            System.out.println("Invalid choice.");
+            return;
+        }
+
+        boolean success = ReportEquipment.toggleEquipmentConditionByIndex(choice - 1);
+        if (success) {
+            System.out.println("Equipment condition updated successfully.");
+        } else {
+            System.out.println("Failed to update equipment condition.");
+        }
+    }
 }
 
-    

@@ -40,16 +40,14 @@ public class Auth {
 		return PASSWORD_PATTERN.matcher(password).matches();
 	}
 
-	public static boolean verifyLogin(String trainerId, String password) {
-                
-                
+	public static String verifyLogin(String trainerId, String password) {
 		if (!isValidTrainerIdFormat(trainerId) || password == null || password.isBlank()) {
-			return false;
+			return null;
 		}
 
 		Path filePath = resolveCredentialsPath();
 		if (!Files.exists(filePath)) {
-			return false;
+			return null;
 		}
 
 		String normalizedId = trainerId.trim().toUpperCase(Locale.ROOT);
@@ -65,27 +63,27 @@ public class Auth {
 				}
 
 				String[] parts = line.split(",", -1);
-				if (parts.length < 5) {
+				if (parts.length < 6) {
 					continue;
 				}
 
 				String fileId = parts[0].trim().toUpperCase(Locale.ROOT);
 				String filePassword = parts[4].trim();
-                                String fileIsDeleted = parts[5].trim().toLowerCase();
+				String fileIsDeleted = parts[5].trim().toLowerCase(Locale.ROOT);
 
 				if (fileId.equals(normalizedId) && filePassword.equals(password)) {
-                                    if (fileIsDeleted.equals("true")) {
-                                        System.out.println("Login Failed: This account has been deleted.");
-                                        return false;
-                                    }
-					return true;
+					if (fileIsDeleted.equals("true")) {
+						System.out.println("Login Failed: This account has been deleted.");
+						return null;
+					}
+					return parts[1].trim(); // Return the trainer's name
 				}
 			}
 		} catch (IOException e) {
-			return false;
+			return null;
 		}
 
-		return false;
+		return null;
 	}
 
 	private static Path resolveCredentialsPath() {
