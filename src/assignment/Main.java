@@ -38,7 +38,7 @@ public class Main {
                     break;
                 case "2":
                     if (UiClasses.trainerLogin()) {
-                        staffPage();
+                        UiClasses.staffPage();
                     } else {
                         System.out.println("Access denied.");
                     }
@@ -93,33 +93,4 @@ public class Main {
         }
     }
 
-    public static void staffPage() {
-        while (true) {
-            System.out.println("\n=== Staff Page ===");
-            System.out.println("1. Select Booking");
-            System.out.println("2. Complete Booking");
-            System.out.println("3. Report equipment");
-            System.out.println("0. Back");
-            System.out.print("Enter choice: ");
-
-            String choice = sc.nextLine();
-
-            switch (choice) {
-                case "1":
-                    BookingPage.staffSelectPage("staff");
-                    break;
-                case "2":
-                    BookingPage.staffCompleteTraining("staff");
-                    break;
-                case "3":
-                    //jianhow
-                    break;
-                case "0":
-                    return;
-                default:
-                    System.out.println("Invalid choice!");
-            }
-        }
-    }
-    
 }
