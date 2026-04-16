@@ -1,6 +1,7 @@
 package member;
 
 import Booking.BookingPage;
+import Booking.Method;
 import java.io.*;
 import java.util.*;
 
@@ -85,14 +86,14 @@ public class MemberSystem {
             System.out.println("\n=== Fitness Club System ===");
             System.out.println("1. Register");
             System.out.println("2. Login");
-            System.out.println("3. Exit");
+            System.out.println("0. Exit");
             System.out.print("Select Option: ");
             String choice = sc.nextLine();
 
             switch (choice) {
                 case "1": register(); break;
                 case "2": login(); break;
-                case "3": break OUTER;
+                case "0": break OUTER;
                 default: System.out.println("Invalid input!");
             }
         }
@@ -142,7 +143,7 @@ public class MemberSystem {
             System.out.println("1. View My Booking Progress");
             System.out.println("2. Subscription (Top-up)");
             System.out.println("3. Make New Booking");
-            System.out.println("4. Logout");
+            System.out.println("0. Logout");
             System.out.print("Selection: ");
             String choice = sc.nextLine();
 
@@ -150,7 +151,7 @@ public class MemberSystem {
                 case "1": viewMyProgress(); break;
                 case "2": performTopUp(); break;
                 case "3": BookingPage.userPage(currentUser.getUsername()); break;
-                case "4": currentUser = null; break;
+                case "0": currentUser = null; break;
                 default: System.out.println("Invalid choice.");
             }
         }
@@ -179,8 +180,8 @@ public class MemberSystem {
 
     public static void viewMyProgress() {
         System.out.println("\n--- My Booking Records ---");
-        System.out.printf("%-10s | %-12s | %-15s | %-10s\n", "ID", "Date", "Activity", "Status");
-        System.out.println("----------------------------------------------------------");
+        System.out.printf("%-6s | %-10s | %-10s | %-10s | %-10s | %-10s\n", "ID", "Date", "Activity", "Time", "Trainner", "Status");
+        System.out.println("----------------------------------------------------------------------");
 
         try (BufferedReader br = new BufferedReader(new FileReader(BOOKING_FILE))) {
             br.readLine(); // 跳过标题
@@ -190,8 +191,10 @@ public class MemberSystem {
                 if (line.trim().isEmpty()) continue; 
                 String[] d = line.split(",");
                 if (d.length >= 7 && d[1].trim().equalsIgnoreCase(currentUser.getUsername().trim())) {
-                    System.out.printf("%-10s | %-12s | %-15s | %-10s\n", 
-                        d[0].trim(), d[2].trim(), d[4].trim(), d[6].trim());
+                    String Time = Method.formatTime(d[3].trim());
+                    // display
+                    System.out.printf("%-6s | %-10s | %-10s | %-10s | %-10s | %-10s\n", 
+                        d[0].trim(), d[2].trim(), d[4].trim(), Time , d[4] ,d[6].trim());
                     found = true;
                 }
             }
