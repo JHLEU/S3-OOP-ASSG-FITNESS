@@ -21,7 +21,7 @@ public class AdminDashboard {
             System.out.println("4. Restore Trainer");
             long brokenCount = ReportEquipment.countBrokenEquipment();
             System.out.printf("5. Manage Equipment Condition (%d equipment broken)\n", brokenCount);
-            System.out.println("6. Logout");
+            System.out.println("0. Logout");
             System.out.print("Choice: ");
             
             String choice = sc.nextLine();
@@ -42,7 +42,7 @@ public class AdminDashboard {
                 case "5":
                     Admin.manageEquipmentCondition();
                     break;
-                case "6":
+                case "0":
                     System.out.println("Logging out...");
                     return;
                 default:
