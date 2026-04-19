@@ -13,8 +13,9 @@ import Booking.BookingPage;
 import UiPackage.UiClasses;
 import Admin.Admin;         
 import Admin.AdminDashboard;
+import member.MainApp;
 import java.util.Scanner;
-import static member.MemberSystem.showMainMenu;
+
 
 public class Main {
 
@@ -34,7 +35,7 @@ public class Main {
 
             switch (choice) {
                 case "1":
-                    showMainMenu();
+                    MainApp.showMainMenu();
                     break;
                 case "2":
                     UiClasses.trainerAuthPage();
