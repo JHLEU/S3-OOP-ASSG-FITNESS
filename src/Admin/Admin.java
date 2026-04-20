@@ -9,7 +9,6 @@ package Admin;
  * @author User
  */
 import java.util.Scanner;
-import Trainer.Auth; // You MUST import this to use Trainer's logic
 import Trainer.ReportEquipment;
 import java.util.List;
 
