@@ -87,32 +87,41 @@ public final class TrainnerData {
 
     // --- NEW: Search Method to see bookings handled by this trainer ---
     public void viewBookings() {
-        // Path to the booking file in your teammate's folder
-        String bookingPath = "src/Booking/bookings.csv";
-        System.out.println("\n--- Handling Bookings for " + name + " (" + id + ") ---");
-        boolean found = false;
+    // 1. Ensure this path matches your project structure exactly
+    String bookingPath = "src/Booking/bookings.csv"; 
+    
+    System.out.println("\n--- Handling Bookings for " + name + " (" + id + ") ---");
+    boolean found = false;
 
-        try (BufferedReader br = new BufferedReader(new FileReader(bookingPath))) {
-            String line;
-            br.readLine(); // Skip header row
+    try (BufferedReader br = new BufferedReader(new FileReader(bookingPath))) {
+        String line;
+        br.readLine(); // Skip header: booking_id,username,date,time,training,staff,status
 
-            while ((line = br.readLine()) != null) {
-                String[] data = line.split(",");
-                // Assuming bookings.csv: BookingID, MemberID, TrainerID, Date
-                // We check if the TrainerID (data[2]) matches this object's id
-                if (data.length >= 3 && data[2].trim().equalsIgnoreCase(this.id)) {
-                    System.out.println("-> Booking ID: " + data[0] + " | Member: " + data[1] + " | Date: " + data[3]);
+        while ((line = br.readLine()) != null) {
+            String[] data = line.split(",");
+            
+            // FIX: Trainer is at index 5, Date is at index 2
+            if (data.length >= 6) {
+                String bookingID = data[0].trim();
+                String memberName = data[1].trim();
+                String bookingDate = data[2].trim();
+                String trainerInFile = data[5].trim();
+
+                // Check if the staff/trainer column matches this trainer's name or ID
+                if (trainerInFile.equalsIgnoreCase(this.name) || trainerInFile.equalsIgnoreCase(this.id)) {
+                    System.out.println("-> Booking ID: " + bookingID + " | Member: " + memberName + " | Date: " + bookingDate);
                     found = true;
                 }
             }
-        } catch (IOException e) {
-            System.out.println("Error: Could not access bookings.csv. Check if path is correct.");
         }
-
-        if (!found) {
-            System.out.println("No active bookings found for this trainer.");
-        }
+    } catch (IOException e) {
+        System.out.println("Error: Could not find " + bookingPath + ". Please check the folder name.");
     }
+
+    if (!found) {
+        System.out.println("No active bookings found for this trainer.");
+    }
+}
 
     public void manageTrainer() {
         Scanner sc = new Scanner(System.in);
