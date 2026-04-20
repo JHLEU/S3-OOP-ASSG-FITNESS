@@ -120,10 +120,10 @@ public final class TrainnerData {
         System.out.println("1. Update Hours");
         System.out.println("2. View Handled Bookings");
         System.out.println("3. DELETE");
+        System.out.println("9. RESET SALARY TO RM0"); 
         System.out.println("0. RETURN"); 
         System.out.print("Choice: ");
         
-        // Using String input prevents the program from crashing if a user types a letter
         String choice = sc.next(); 
         
         switch (choice) {
@@ -139,6 +139,11 @@ public final class TrainnerData {
             case "3":
                 this.isDeleted = true;
                 System.out.println("Trainer marked for deletion.");
+                break;
+            case "9": 
+                this.hours = 0;
+                this.salary = 0;
+                System.out.println("Success: " + name + "'s hours and salary have been cleared to 0.");
                 break;
             case "0":
                 System.out.println("Returning to Dashboard...");
