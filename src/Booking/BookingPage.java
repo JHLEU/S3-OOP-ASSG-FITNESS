@@ -299,7 +299,6 @@ public class BookingPage {
         // -------------------- update --------------------
         File.updateStatus(input);
 
-        System.out.println("Training marked as COMPLETED!");
     }
     
 }
