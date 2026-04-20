@@ -1,5 +1,5 @@
 username,password,totalSpent,tier,isDeleted
-kzz,z,701.0,Gold,false
+kzz,z,701.0,Gold,true
 cyh,123,0.0,Bronze,false
 asdf,3245,0.0,Bronze,false
 mw,1,0.0,Gold,false
