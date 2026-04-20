@@ -58,17 +58,36 @@ public class AdminDashboard {
     // 4. These sub-methods MUST also be 'private static void'
     private static void manageMembers() {
         MembershipData[] members = rf.readMemberFile(MEMBER_PATH);
-        System.out.print("Enter Member Username to search: ");
+        
+        // 1. Show all active usernames preview
+        System.out.println("\n--- Active Members ---");
+        boolean anyActive = false;
+        for (MembershipData m : members) {
+            if (m != null && !m.isDeleted()) {
+                System.out.print("\n[" + m.getUsername() + "] ");
+                anyActive = true;
+            }
+        }
+        System.out.println(); 
+
+        if (!anyActive) {
+            System.out.println("No active members found.");
+            return;
+        }
+
+        // 2. Search and Change Rank
+        System.out.print("\nEnter Username to change rank: ");
         String searchName = sc.nextLine();
 
         for (MembershipData m : members) {
             if (m != null && m.getUsername().equalsIgnoreCase(searchName) && !m.isDeleted()) {
+                // Directly call the rank change logic
                 m.manageMember(); 
                 rf.saveMemberFile(MEMBER_PATH, members); 
                 return;
             }
         }
-        System.out.println("Active member not found.");
+        System.out.println("Error: That username is not in the active list.");
     }
     
     private static void manageTrainers() {
