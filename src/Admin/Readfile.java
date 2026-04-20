@@ -57,27 +57,46 @@ public class Readfile {
 
     // 3. Reading Trainer Data
     public TrainnerData[] readTrainerFile(String filename) {
-        TrainnerData[] trainerArray = new TrainnerData[100];
-        int count = 0;
-        try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
-            String line;
-            br.readLine(); // skip header
-            while ((line = br.readLine()) != null) {
-                String[] d = line.split(",");
-                if (d.length >= 2) {
-                    // Check if the 6th column (index 5) exists for the deleted status
-                    boolean status = (d.length >= 6) ? Boolean.parseBoolean(d[5].trim()) : false;
+    TrainnerData[] trainerArray = new TrainnerData[100];
+    int count = 0;
+    try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
+        String line;
+        br.readLine(); // Skip header
+        while ((line = br.readLine()) != null) {
+            // 1. Skip completely empty lines
+            if (line.trim().isEmpty()) continue;
 
-                    trainerArray[count] = new TrainnerData(d[0].trim(), d[1].trim(), 0);
-                    trainerArray[count].setIsDeleted(status); // Apply the status from file
-                    count++;
+            String[] d = line.split(",");
+            if (d.length >= 5) {
+                String id = d[0].trim();
+                String name = d[1].trim();
+                String date = d[2].trim();
+                
+                // 2. SAFE PARSING: Handle empty salary (like in TR006)
+                String salaryStr = d[3].trim();
+                double sal = 0.0; 
+                if (!salaryStr.isEmpty()) {
+                    try {
+                        sal = Double.parseDouble(salaryStr);
+                    } catch (NumberFormatException e) {
+                        sal = 0.0; // Default to 0 if data is corrupted
+                    }
                 }
+
+                String pass = d[4].trim();
+                
+                // 3. SAFE STATUS: Handle missing isDeleted column
+                boolean status = (d.length >= 6) ? d[5].trim().equalsIgnoreCase("true") : false;
+
+                trainerArray[count] = new TrainnerData(id, name, date, sal, pass, status);
+                count++;
             }
-        } catch (IOException e) {
-            System.out.println("Error: Could not read trainer file.");
         }
-        return trainerArray;
+    } catch (IOException e) {
+        System.out.println("Error reading trainer file: " + e.getMessage());
     }
+    return trainerArray;
+}
 
     // 4. Saving Member Changes back to CSV
     public void saveMemberFile(String filename, MembershipData[] memberArray) {
@@ -103,22 +122,23 @@ public class Readfile {
 
     // 5. Saving Trainer Changes back to CSV
         public void saveTrainerFile(String filename, TrainnerData[] trainerArray) {
-        // try-with-resources automatically closes and flushes the data
-        try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(filename)))) {
-            pw.println("trainerID,Name,JoinDate,Sallary,Password,isDeleted"); 
+    try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(filename)))) {
+        pw.println("trainerID,Name,JoinDate,Sallary,Password,isDeleted"); 
 
-            for (TrainnerData t : trainerArray) {
-                if (t != null) {
-                    // We use placeholders for JoinDate and Password to stay compatible
-                    pw.println(t.getId() + "," + 
-                               t.getname() + ",1-1-2026,2000,@Abc123," + 
-                               t.isDeleted()); 
-                }
+        for (TrainnerData t : trainerArray) {
+            if (t != null) {
+                // Use getters to write the ORIGINAL data back to the file
+                pw.println(t.getId() + "," + 
+                           t.getname() + "," + 
+                           t.getjoinDate() + "," + 
+                           t.getsalary() + "," + 
+                           t.getpassword() + "," + 
+                           t.isDeleted()); 
             }
-            System.out.println("System: Trainer file successfully updated.");
-        } catch (IOException e) {
-            System.out.println("CRITICAL ERROR: Could not write to " + filename);
-            e.printStackTrace(); // This will tell us if Windows is blocking the file
         }
+        System.out.println("System: Trainer file updated (Data preserved).");
+    } catch (IOException e) {
+        System.out.println("Error: " + e.getMessage());
     }
+}
 }
