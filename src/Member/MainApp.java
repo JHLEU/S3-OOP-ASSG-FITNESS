@@ -44,7 +44,7 @@ public class MainApp {
             System.out.print("Selection: ");
             String c = sc.nextLine();
 
-            switch (c) {11
+            switch (c) {
                 case "1": BookingPage.userPage(currentUser.getUsername()); break;
                 case "2": viewProgress(); break;
                 case "3": topUp(); break;
