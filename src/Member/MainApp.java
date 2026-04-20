@@ -1,6 +1,7 @@
 package member;
 
 import Booking.BookingPage;
+import Booking.Method;
 import java.util.*;
 
 public class MainApp {
@@ -12,7 +13,7 @@ public class MainApp {
         manager.initializeFile();
         while (true) {
             System.out.println("\n=== Member System ===");
-            System.out.println("1. Register\n2. Login\n0. Back");
+            System.out.println("1. Login\n2. Register\n0. Back");
             System.out.print("Choice: ");
             String choice = sc.nextLine();
 
@@ -21,16 +22,16 @@ public class MainApp {
                 String u = sc.nextLine();
                 System.out.print("Password: ");
                 String p = sc.nextLine();
-                if (manager.registerUser(u, p)) System.out.println("Success!");
-                else System.out.println("Error: Username taken!");
+                currentUser = manager.loginUser(u, p);
+                if (currentUser != null) showDashboard();
+                else System.out.println("Login Failed or got ban!");
             } else if (choice.equals("2")) {
                 System.out.print("Username: ");
                 String u = sc.nextLine();
                 System.out.print("Password: ");
                 String p = sc.nextLine();
-                currentUser = manager.loginUser(u, p);
-                if (currentUser != null) showDashboard();
-                else System.out.println("Login Failed!");
+                if (manager.registerUser(u, p)) System.out.println("Success!");
+                else System.out.println("Error: Username taken!");
             } else if (choice.equals("0")) break;
         }
     }
@@ -39,14 +40,14 @@ public class MainApp {
         while (currentUser != null) {
             System.out.println("\n--- Member Dashboard ---");
             System.out.println("User: " + currentUser.getUsername() + " | Tier: " + currentUser.getTier());
-            System.out.println("1. View Progress\n2. Top-up\n3. Booking\n0. Logout");
+            System.out.println("1. Booking\n2. View Progress\n3. Top-up \n0. Logout\n");
             System.out.print("Selection: ");
             String c = sc.nextLine();
 
             switch (c) {
-                case "1": viewProgress(); break;
-                case "2": topUp(); break;
-                case "3": BookingPage.userPage(currentUser.getUsername()); break;
+                case "1": BookingPage.userPage(currentUser.getUsername()); break;
+                case "2": viewProgress(); break;
+                case "3": topUp(); break;
                 case "0": currentUser = null; break;
             }
         }
@@ -54,11 +55,14 @@ public class MainApp {
 
     private static void viewProgress() {
         ArrayList<String[]> data = manager.loadUserBookings(currentUser.getUsername());
-        System.out.printf("%-6s | %-10s | %-12s | %-10s\n", "ID", "Date", "Activity", "Status");
-        System.out.println("---------------------------------------------");
+        System.out.printf("\n%-6s | %-10s | %-10s | %-12s | %-10s | %-10s\n", "ID", "Date", "Activity", "Time", "Trainner", "Status");
+        System.out.println("------------------------------------------------------------------------");
         for (String[] row : data) {
-            System.out.printf("%-6s | %-10s | %-12s | %-10s\n", row[0], row[2], row[4], row[6]);
+            System.out.printf("%-6s | %-10s | %-10s | %-12s | %-10s | %-10s\n",
+                    row[0], row[2], row[4], Method.formatTime(row[3]), row[5], row[6]);
         }
+        
+        BookingPage.deletePage(currentUser.getUsername());
     }
 
     private static void topUp() {

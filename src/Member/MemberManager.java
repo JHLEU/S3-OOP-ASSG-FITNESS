@@ -61,7 +61,7 @@ public class MemberManager {
     public User loginUser(String u, String p) {
         ArrayList<User> list = loadMembers();
         for (User user : list) {
-            if (user.getUsername().trim().equals(u.trim()) && user.getPassword().equals(p)) {
+            if (user.getUsername().trim().equals( u.trim() ) && user.getPassword().equals( p ) && !user.isDeleted()) {
                 return user;
             }
         }
