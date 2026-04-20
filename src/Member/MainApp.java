@@ -44,7 +44,7 @@ public class MainApp {
             System.out.print("Selection: ");
             String c = sc.nextLine();
 
-            switch (c) {
+            switch (c) {11
                 case "1": BookingPage.userPage(currentUser.getUsername()); break;
                 case "2": viewProgress(); break;
                 case "3": topUp(); break;
@@ -55,7 +55,7 @@ public class MainApp {
 
     private static void viewProgress() {
         ArrayList<String[]> data = manager.loadUserBookings(currentUser.getUsername());
-        System.out.printf("\n%-6s | %-10s | %-10s | %-12s | %-10s | %-10s\n", "ID", "Date", "Activity", "Time", "Trainner", "Status");
+        System.out.printf("\n%-6s | %-10s | %-10s | %-12s | %-10s | %-10s\n", "ID", "Date", "Activity", "Time", "Trainer", "Status");
         System.out.println("------------------------------------------------------------------------");
         for (String[] row : data) {
             System.out.printf("%-6s | %-10s | %-10s | %-12s | %-10s | %-10s\n",
