@@ -19,13 +19,20 @@ public class TrainingSlot {
         this.max = max;
     }
 
-    public String getName() {return name;}
+    public String getName() {
+        return name;
+    }
 
-    public int getCurrent() {return current;}
+    public int getCurrent() {
+        return current;
+    }
 
-    public int getMax() {return max;}
+    public int getMax() {
+        return max;
+    }
 
-    public String display() {return name + " (" + current + "/" + max + ")";}
-    
+    public String display() {
+        return name + " (" + current + "/" + max + ")";
+    }    
 }
 
