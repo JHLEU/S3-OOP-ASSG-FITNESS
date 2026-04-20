@@ -42,7 +42,7 @@ public class Main {
                     break;
                 case "3":
                     if (Admin.AdminLogin()) {
-                        adminPage(); // Launch the Admin-specific menu
+                        AdminDashboard.displayMenu(); // Launch the Admin-specific menu
                     } else {
                         System.out.println("Admin Access denied.");
                     }
@@ -54,10 +54,5 @@ public class Main {
                     System.out.println("Invalid choice!");
             }
         }
-    }
-    
-    public static void adminPage() {
-        AdminDashboard dashboard = new AdminDashboard();
-        dashboard.displayMenu();
     }
 }
