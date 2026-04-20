@@ -4,21 +4,24 @@ import java.util.Scanner;
 import Trainer.ReportEquipment;
 
 public class AdminDashboard {
+    // 1. All variables MUST be static to be used by the static displayMenu()
     private static final Scanner sc = new Scanner(System.in);
-    private final Readfile rf = new Readfile();
-    private final Restore restorer = new Restore();
+    private static final Readfile rf = new Readfile();
+    private static final Restore restorer = new Restore();
     
-    // File Paths
-    private final String MEMBER_PATH = "src/member/members.csv";
-    private final String TRAINER_PATH = "src/Trainer/TrainerCredentials.csv";
+    // 2. These paths must also be static
+    private static final String MEMBER_PATH = "src/member/members.csv";
+    private static final String TRAINER_PATH = "src/Trainer/TrainerCredentials.csv";
 
-    public void displayMenu() {
+    // 3. Changed to 'public static void' so Main.java can call it directly
+    public static void displayMenu() {
         while (true) {
             System.out.println("\n===== ADMIN DASHBOARD =====");
             System.out.println("1. Manage Members (Search/Update/Delete)");
             System.out.println("2. Restore Member");
             System.out.println("3. Manage Trainers (Search/Bookings/Salary)");
             System.out.println("4. Restore Trainer");
+            
             long brokenCount = ReportEquipment.countBrokenEquipment();
             System.out.printf("5. Manage Equipment Condition (%d equipment broken)\n", brokenCount);
             System.out.println("0. Logout");
@@ -28,13 +31,13 @@ public class AdminDashboard {
             
             switch (choice) {
                 case "1":
-                    manageMembers();
+                    manageMembers(); // Must be a static method
                     break;
                 case "2":
                     restorer.restoreMember(); 
                     break;
                 case "3":
-                    manageTrainers();
+                    manageTrainers(); // Must be a static method
                     break;
                 case "4":
                     restorer.restoreTrainer(); 
@@ -52,7 +55,8 @@ public class AdminDashboard {
         }
     }
 
-    private void manageMembers() {
+    // 4. These sub-methods MUST also be 'private static void'
+    private static void manageMembers() {
         MembershipData[] members = rf.readMemberFile(MEMBER_PATH);
         System.out.print("Enter Member Username to search: ");
         String searchName = sc.nextLine();
@@ -67,20 +71,16 @@ public class AdminDashboard {
         System.out.println("Active member not found.");
     }
     
-    private void manageTrainers() {
+    private static void manageTrainers() {
         TrainnerData[] trainers = rf.readTrainerFile(TRAINER_PATH);
         System.out.print("Enter Trainer ID to search (e.g. TR001): ");
         String searchId = sc.nextLine();
         
         boolean found = false;
         for (TrainnerData t : trainers) {
-            // Only search for active trainers
             if (t != null && t.getId().equalsIgnoreCase(searchId) && !t.isDeleted()) {
-                t.manageTrainer(); // This triggers the sub-menu with Delete option
-                
-                // CRITICAL: Save the array to the CSV after the change
+                t.manageTrainer(); 
                 rf.saveTrainerFile(TRAINER_PATH, trainers); 
-                
                 found = true;
                 break;
             }
