@@ -121,56 +121,19 @@ public class BookingPage {
         System.out.println("Booking successful! ID: " + bookingId);
     }
     
-    public static void viewPage(String username) {
-
-        String targetDate;
-
-        // -------------------- ask for date --------------------
-        while (true) {
-            System.out.print("\nYear(or enter '0' to exit): ");
-            String year = sc.nextLine();
-            if (year.equals("0")) {
-                return;
-            }
-
-            System.out.print("Month: ");
-            String month = sc.nextLine();
-
-            System.out.print("Day: ");
-            String day = sc.nextLine();
-
-            targetDate = Method.getValidatedDate(year, month, day);
-
-            if (!targetDate.equals("INVALID")) {
-                break;
-            }
-
-            System.out.println("Invalid date, try again.");
-        }
-
+    public static void deletePage(String username) {
+        
         // -------------------- get user's booking --------------------
-        ArrayList<Booking> bookings = File.userNamedate(username, targetDate);
+        ArrayList<Booking> bookings = File.userName(username);
 
         if (bookings.isEmpty()) {
             System.out.println("No bookings found.");
             return;
         }
 
-        System.out.println("\n============= Booking =============");
-
-        for (Booking o : bookings) {
-            System.out.println("---------------------------------");
-            System.out.println("Booking ID : " + o.getBookingId());
-            System.out.println("Name       : " + o.getUsername());
-            System.out.println("Date       : " + o.getDate());
-            System.out.println("Time       : " + Method.formatTime(o.getTime()));
-            System.out.println("Type       : " + o.getTraining());
-            System.out.println("Trainer    : " + (o.getStaff().equals("null") ? "-" : o.getStaff() ) );
-            System.out.println("---------------------------------");
-        }
-
         // -------------------- choose booking id --------------------
-        System.out.print("\nEnter booking_id to delete (0 to exit): ");
+        System.out.print("\nEnter booking_id to delete (can't delete booking that already comleted)");
+        System.out.print("\nChoice (Enter 0 to exit): ");
         String input = sc.nextLine().trim().toUpperCase();
 
         if (input.equals("0")) {

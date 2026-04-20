@@ -46,14 +46,14 @@ public class File {
         return list;
     }
 
-    public static ArrayList<Booking> userNamedate(String username, String targetDate) {
-        /// filter target username, target date, status = BOOKED
+    public static ArrayList<Booking> userName(String username) {
+        /// filter target username, status = BOOKED
         
         ArrayList<Booking> result = new ArrayList<>();
         ArrayList<Booking> bookings = getData();
         
         for (Booking o : bookings){
-            if (o.getUsername().equals(username) && o.getDate().equals(targetDate) && o.getStatus().equals("BOOKED")) {
+            if (o.getUsername().equals(username) && o.getStatus().equals("BOOKED")) {
                 result.add(o);
             }
         }
