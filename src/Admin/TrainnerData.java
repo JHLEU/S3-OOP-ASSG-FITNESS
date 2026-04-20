@@ -103,7 +103,7 @@ public final class TrainnerData {
         System.out.println("1. Update Hours");
         System.out.println("2. View Handled Bookings");
         System.out.println("3. DELETE");
-        System.out.println("4. RETURN"); // Updated to 4
+        System.out.println("0. RETURN"); // Updated to 4
         System.out.print("Choice: ");
         
         // Using String input prevents the program from crashing if a user types a letter
@@ -123,7 +123,7 @@ public final class TrainnerData {
                 this.isDeleted = true;
                 System.out.println("Trainer marked for deletion.");
                 break;
-            case "4":
+            case "0":
                 System.out.println("Returning to Dashboard...");
                 return; 
             default:

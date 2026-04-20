@@ -86,6 +86,7 @@ public final class MembershipData {
         System.out.println("2. Upgrade to Silver (RM200)");
         System.out.println("3. Upgrade to Bronze (RM100)");
         System.out.println("4. DELETE Member Account");
+        System.out.println("0. Exit");
         System.out.print("Selection: ");
         
         int choice = sc.nextInt();
@@ -105,6 +106,9 @@ public final class MembershipData {
                 this.isDeleted = true;
                 System.out.println("Member " + username + " marked for deletion.");
                 break;
+            case 0:
+                System.out.println("Returning to Dashboard...");
+                return;
             default:
                 System.out.println("Invalid choice. No changes made.");
                 break;
