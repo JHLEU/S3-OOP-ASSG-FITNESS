@@ -13,18 +13,19 @@ import java.io.*;
 import java.util.Scanner;
 
 public final class TrainnerData {
-    private String id;
-    private String name;
+    private String id, name, joinDate, password;
     private double hours;
     private double salary;
     private final double RATE = 15.0;
     private boolean isDeleted = false;
 
-    public TrainnerData(String id, String name, double hours) {
+    public TrainnerData(String id, String name, String joinDate, double salary, String password, boolean isDeleted) {
         this.id = id;
         this.name = name;
-        this.hours = hours;
-        calculateSalary();
+        this.joinDate = joinDate;
+        this.salary = salary;
+        this.password = password;
+        this.isDeleted = isDeleted;
     }
     
     // --- Getters/Setters and calculateSalary ---
@@ -42,6 +43,22 @@ public final class TrainnerData {
     
     public void setname(String name){
         this.name = name;
+    }
+    
+    public String getjoinDate(){
+        return joinDate;
+    }
+    
+    public void setjoinDate(String joinDate){
+        this.joinDate = joinDate;
+    }
+    
+    public String getpassword(){
+        return password;
+    }
+    
+    public void setpassword(String password){
+        this.password = password;
     }
     
     public double gethours(){
@@ -103,7 +120,7 @@ public final class TrainnerData {
         System.out.println("1. Update Hours");
         System.out.println("2. View Handled Bookings");
         System.out.println("3. DELETE");
-        System.out.println("4. RETURN"); // Updated to 4
+        System.out.println("0. RETURN"); 
         System.out.print("Choice: ");
         
         // Using String input prevents the program from crashing if a user types a letter
@@ -113,7 +130,7 @@ public final class TrainnerData {
             case "1":
                 System.out.print("Enter total hours worked: ");
                 this.hours = sc.nextDouble();
-                calculateSalary(); // Ensure this method exists in your class
+                calculateSalary(); 
                 System.out.println("New Salary: RM" + salary);
                 break;
             case "2":
@@ -123,7 +140,7 @@ public final class TrainnerData {
                 this.isDeleted = true;
                 System.out.println("Trainer marked for deletion.");
                 break;
-            case "4":
+            case "0":
                 System.out.println("Returning to Dashboard...");
                 return; 
             default:
