@@ -9,9 +9,8 @@ package Admin;
 import java.util.Scanner;
 
 public final class MembershipData {
-    private String username; // Changed from memberId to match your constructor
+    private String username; 
     private String tier;
-    private double price;
     private boolean isDeleted = false;
     private String password;
     private double totalSpent;
@@ -22,7 +21,6 @@ public final class MembershipData {
         this.totalSpent = totalSpent;
         this.tier = tier;
         this.isDeleted = isDeleted;
-        ranking(tier);
     }
     
     // --- GETTERS AND SETTERS ---
@@ -56,11 +54,6 @@ public final class MembershipData {
     
     public void setTier(String tier) {
         this.tier = tier;
-        ranking(tier); 
-    }
-    
-    public double getPrice(){ 
-        return price; 
     }
     
     public boolean isDeleted(){ 
@@ -82,9 +75,9 @@ public final class MembershipData {
         Scanner sc = new Scanner(System.in);
         System.out.println("\n--- Managing Member: " + username + " ---");
         System.out.println("Current Tier: " + tier + " | Total Spent: RM" + totalSpent);
-        System.out.println("1. Upgrade to Gold (RM300)");
-        System.out.println("2. Upgrade to Silver (RM200)");
-        System.out.println("3. Upgrade to Bronze (RM100)");
+        System.out.println("1. Change tier to Gold");
+        System.out.println("2. Change tier to Silver");
+        System.out.println("3. Change tier to Bronze");
         System.out.println("4. DELETE Member Account");
         System.out.println("0. Exit");
         System.out.print("Selection: ");
@@ -114,26 +107,9 @@ public final class MembershipData {
                 break;
         }
     }
-
     private void updateTier(String newTier) {
-        this.tier = newTier;
-        ranking(newTier);
-        System.out.println("Tier updated to " + tier);
+        this.tier = newTier; // Only updates the String
+        System.out.println("Success: " + username + " updated to " + newTier);
     }
-
-    // --- RANKING LOGIC ---
-    public void ranking(String tierName) {
-        if (tierName.equalsIgnoreCase("Gold")) {
-            this.price = 300;
-        } else if (tierName.equalsIgnoreCase("Silver")) {
-            this.price = 200;
-        } else if (tierName.equalsIgnoreCase("Bronze") || tierName.equalsIgnoreCase("Basic")) {
-            this.price = 100;
-        } else {
-            this.price = 0;
-        }
-    }
-
-    
 }
 

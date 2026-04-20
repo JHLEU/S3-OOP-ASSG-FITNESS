@@ -59,28 +59,29 @@ public class AdminDashboard {
     private static void manageMembers() {
         MembershipData[] members = rf.readMemberFile(MEMBER_PATH);
         
-        // 1. Show all active usernames first
-        System.out.println("\n--- Active Members List ---");
+        // 1. Show all active usernames preview
+        System.out.println("\n--- Active Members ---");
         boolean anyActive = false;
         for (MembershipData m : members) {
             if (m != null && !m.isDeleted()) {
-                System.out.print("\n[" + m.getUsername() + "]");
+                System.out.print("\n[" + m.getUsername() + "] ");
                 anyActive = true;
             }
         }
-        System.out.println(); // New line for formatting
+        System.out.println(); 
 
         if (!anyActive) {
-            System.out.println("No active members found in the system.");
+            System.out.println("No active members found.");
             return;
         }
 
-        // 2. Ask for the specific username to manage
-        System.out.print("\nEnter Member Username to manage: ");
+        // 2. Search and Change Rank
+        System.out.print("\nEnter Username to change rank: ");
         String searchName = sc.nextLine();
 
         for (MembershipData m : members) {
             if (m != null && m.getUsername().equalsIgnoreCase(searchName) && !m.isDeleted()) {
+                // Directly call the rank change logic
                 m.manageMember(); 
                 rf.saveMemberFile(MEMBER_PATH, members); 
                 return;
